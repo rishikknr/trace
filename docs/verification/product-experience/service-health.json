@@ -1,0 +1,15 @@
+{
+  "backendReadiness": {
+    "status": 200,
+    "reachable": true
+  },
+  "processorHealth": {
+    "status": 200,
+    "reachable": true
+  },
+  "frontend": {
+    "status": 200,
+    "reachable": true
+  },
+  "runtimeRelease": "c82020f85bbda62bf4e9a3c08229ed680ab0372de34478d2ba8c64d6b5e35a2a"
+}

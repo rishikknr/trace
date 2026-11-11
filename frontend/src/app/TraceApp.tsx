@@ -27,6 +27,11 @@ import {
   ProfilePage,
 } from "../features/auth/AuthPages";
 
+const GovernancePage = lazy(() =>
+  import("../features/governance/GovernancePage").then((m) => ({
+    default: m.GovernancePage,
+  })),
+);
 const ConnectionsPage = lazy(() =>
   import("../features/integration/ConnectionsPage").then((m) => ({
     default: m.ConnectionsPage,
@@ -417,6 +422,8 @@ export function TraceApp() {
     ) : (
       <AccessDenied />
     );
+  else if (route === "governance")
+    content = <GovernancePage session={session} />;
   else if (route === "teams")
     content = <TeamsPage session={session} reload={reload} />;
   else if (
@@ -459,6 +466,7 @@ export function TraceApp() {
   else if (route === "metrics" || route === "report-mappings")
     content = (
       <MetricsPage
+        key={route}
         session={session}
         mappingsOnly={route === "report-mappings"}
       />
@@ -491,6 +499,12 @@ export function TraceApp() {
         initialQuery={new URLSearchParams(route.split("?")[1]).get("q") ?? ""}
         initialSource={
           new URLSearchParams(route.split("?")[1]).get("source") ?? undefined
+        }
+        initialOwner={
+          new URLSearchParams(route.split("?")[1]).get("owner") ?? ""
+        }
+        initialFreshness={
+          new URLSearchParams(route.split("?")[1]).get("freshness") ?? ""
         }
       />
     );

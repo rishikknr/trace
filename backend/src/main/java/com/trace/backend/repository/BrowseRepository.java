@@ -70,9 +70,47 @@ public class BrowseRepository {
                   null,
                   false)),
           Map.entry(
-              "formulas", new Source("r.*", "formulas r", "r.name", "r.name,r.id", null, false)),
+              "formulas",
+              new Source(
+                  "r.*,(SELECT t.name FROM teams t WHERE t.organization_id=r.organization_id AND"
+                      + " t.id=r.owner_team_id) AS owner_team_name,(SELECT fv.version FROM"
+                      + " formula_versions fv WHERE fv.organization_id=r.organization_id AND"
+                      + " fv.formula_id=r.id ORDER BY fv.version DESC LIMIT 1) AS"
+                      + " latest_version,(SELECT fv.state FROM formula_versions fv WHERE"
+                      + " fv.organization_id=r.organization_id AND fv.formula_id=r.id ORDER BY"
+                      + " fv.version DESC LIMIT 1) AS latest_state,(SELECT fv.created_at FROM"
+                      + " formula_versions fv WHERE fv.organization_id=r.organization_id AND"
+                      + " fv.formula_id=r.id ORDER BY fv.version DESC LIMIT 1) AS"
+                      + " latest_created_at,(SELECT count(*) FROM formula_versions fv WHERE"
+                      + " fv.organization_id=r.organization_id AND fv.formula_id=r.id) AS"
+                      + " version_count",
+                  "formulas r",
+                  "r.name || ' ' || r.description",
+                  "r.name,r.id",
+                  null,
+                  false)),
           Map.entry(
-              "metrics", new Source("r.*", "metrics r", "r.name", "r.name,r.id", null, false)),
+              "metrics",
+              new Source(
+                  "r.*,(SELECT t.name FROM teams t WHERE t.organization_id=r.organization_id AND"
+                      + " t.id=r.owner_team_id) AS owner_team_name,(SELECT mv.version FROM"
+                      + " metric_versions mv WHERE mv.organization_id=r.organization_id AND"
+                      + " mv.metric_id=r.id ORDER BY mv.version DESC LIMIT 1) AS"
+                      + " latest_version,(SELECT f.name FROM metric_versions mv JOIN"
+                      + " formula_versions fv ON fv.organization_id=mv.organization_id AND"
+                      + " fv.id=mv.formula_version_id JOIN formulas f ON"
+                      + " f.organization_id=fv.organization_id AND f.id=fv.formula_id WHERE"
+                      + " mv.organization_id=r.organization_id AND mv.metric_id=r.id ORDER BY"
+                      + " mv.version DESC LIMIT 1) AS formula_name,(SELECT count(DISTINCT"
+                      + " rm.asset_id) FROM report_mappings rm JOIN metric_versions mv ON"
+                      + " mv.organization_id=rm.organization_id AND mv.id=rm.metric_version_id"
+                      + " WHERE mv.organization_id=r.organization_id AND mv.metric_id=r.id AND"
+                      + " rm.active) AS consumer_count",
+                  "metrics r",
+                  "r.name || ' ' || r.business_key || ' ' || r.description",
+                  "r.name,r.id",
+                  null,
+                  false)),
           Map.entry(
               "imports",
               new Source(
@@ -217,6 +255,21 @@ public class BrowseRepository {
       String status,
       String sort,
       UUID source) {
+    return page(t, kind, limit, offset, q, parent, type, status, sort, source, Map.of());
+  }
+
+  public PageResponse<Map<String, Object>> page(
+      TenantContext t,
+      String kind,
+      int limit,
+      int offset,
+      String q,
+      UUID parent,
+      String type,
+      String status,
+      String sort,
+      UUID source,
+      Map<String, String> filters) {
     guard.requireTransaction(t);
     jdbc.execute("SET LOCAL statement_timeout='5s'");
     var s = SOURCES.get(kind);
@@ -252,6 +305,30 @@ public class BrowseRepository {
           };
       args.add(type);
     }
+    if (kind.equals("mappings") && !type.isBlank()) {
+      where += " AND r.relationship_type=?";
+      args.add(type);
+    }
+    if (kind.equals("mappings") && !filters.getOrDefault("provenance", "").isBlank()) {
+      where += " AND r.provenance=?";
+      args.add(filters.get("provenance"));
+    }
+    if (kind.equals("formulas") && !type.isBlank()) {
+      where += " AND r.language=?";
+      args.add(type);
+    }
+    if (kind.equals("formulas") && !status.isBlank()) {
+      where +=
+          " AND COALESCE((SELECT fv.state FROM formula_versions fv WHERE"
+              + " fv.organization_id=r.organization_id AND fv.formula_id=r.id ORDER BY fv.version"
+              + " DESC LIMIT 1),'NO_VERSION')=?";
+      args.add(status);
+    }
+    if (kind.equals("metrics")) {
+      String owner = filters.getOrDefault("owner", "");
+      if ("missing".equals(owner)) where += " AND nullif(trim(r.business_owner),'') IS NULL";
+      if ("assigned".equals(owner)) where += " AND nullif(trim(r.business_owner),'') IS NOT NULL";
+    }
     if (kind.equals("connections") && !type.isBlank()) {
       where += " AND r.platform=?";
       args.add(type);
@@ -275,6 +352,39 @@ public class BrowseRepository {
               : " AND (s.asset_id=? OR t.asset_id=?)";
       args.add(parent);
       args.add(parent);
+    }
+    if (kind.equals("assets")) {
+      for (var entry : Map.of("database", 1, "schema", 2).entrySet()) {
+        String value = filters.getOrDefault(entry.getKey(), "");
+        if (!value.isBlank()) {
+          where +=
+              " AND r.platform='SNOWFLAKE' AND split_part(CASE WHEN"
+                  + " r.asset_type='SQL_TRANSFORMATION' THEN COALESCE((SELECT ta.external_key FROM"
+                  + " assets ta WHERE ta.organization_id=r.organization_id AND"
+                  + " ta.id::text=r.metadata->>'targetAssetId'),r.external_key) ELSE r.external_key"
+                  + " END,'.',"
+                  + entry.getValue()
+                  + ")=?";
+          args.add(value);
+        }
+      }
+      String owner = filters.getOrDefault("owner", "");
+      if ("missing".equals(owner)) where += " AND nullif(trim(r.owner),'') IS NULL";
+      else if (!owner.isBlank()) {
+        where += " AND r.owner_team_id::text=?";
+        args.add(owner);
+      }
+      String fresh = filters.getOrDefault("freshness", "");
+      if ("unknown".equals(fresh)) where += " AND r.last_seen_at IS NULL";
+      if ("older-7d".equals(fresh)) where += " AND r.last_seen_at < now()-interval '7 days'";
+      if ("recent-7d".equals(fresh)) where += " AND r.last_seen_at >= now()-interval '7 days'";
+      String lineage = filters.getOrDefault("lineage", "");
+      if (Set.of("recorded", "missing").contains(lineage))
+        where +=
+            ("missing".equals(lineage) ? " AND NOT" : " AND")
+                + " EXISTS(SELECT 1 FROM lineage_edges le WHERE"
+                + " le.organization_id=r.organization_id AND le.active AND (le.source_asset_id=r.id"
+                + " OR le.target_asset_id=r.id))";
     }
     long total =
         jdbc.queryForObject("SELECT count(*) FROM " + s.from() + where, Long.class, args.toArray());

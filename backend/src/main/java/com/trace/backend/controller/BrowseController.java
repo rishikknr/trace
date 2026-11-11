@@ -24,7 +24,8 @@ public class BrowseController {
       @RequestParam(defaultValue = "") String type,
       @RequestParam(defaultValue = "") String status,
       @RequestParam(defaultValue = "") String sort,
-      @RequestParam(required = false) UUID source) {
-    return service.page(kind, limit, offset, q, parent, type, status, sort, source);
+      @RequestParam(required = false) UUID source,
+      @RequestParam Map<String, String> filters) {
+    return service.page(kind, limit, offset, q, parent, type, status, sort, source, filters);
   }
 }

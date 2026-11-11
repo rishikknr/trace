@@ -1,3 +1,4 @@
+import { SuggestedMappings } from "./SuggestedMappings";
 import { MetadataInventory } from "./MetadataInventory";
 import { usePage, loadOptions } from "./paging";
 import { Pager } from "./pagination";
@@ -498,6 +499,7 @@ export function ImportCenter({
               ))}
             </div>
           )}
+          {batch.status === "COMMITTED" && <SuggestedMappings session={session} source={batch.connectionId}/>}
           {batch.preview.warnings.map((warning, i) => (
             <p className="notice warning" key={i}>
               {warning}

@@ -7,7 +7,7 @@ export async function requireCurrentBackend(signal?: AbortSignal) {
   );
   if (status.integrationVersion !== 3)
     throw new ApiError(
-      "The running Trace backend is out of date. Start the matching backend after completing the database upgrade through V15, then retry.",
+      "The running Trace backend is out of date. Start the matching backend after completing the database upgrade through V18, then retry.",
       "BACKEND_UPGRADE_REQUIRED",
     );
 }

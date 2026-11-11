@@ -8,3 +8,8 @@ HTMLDialogElement.prototype.showModal = function () {
 HTMLDialogElement.prototype.close = function () {
   this.open = false;
 };
+
+// CodeMirror uses browser layout measurements; actual geometry is covered in browser acceptance.
+Range.prototype.getClientRects = () => [] as unknown as DOMRectList;
+Range.prototype.getBoundingClientRect = () => new DOMRect();
+window.scrollTo = () => {};

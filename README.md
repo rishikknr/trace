@@ -1,12 +1,14 @@
-# Current lineage release — November 11, 2026
+# Current product-experience release — November 12, 2026
 
-The current implementation adds evidence-backed transformation registration, full-depth paged graph exploration, dataset and column impact, registered formula/metric lineage, and source-centric navigation. **Schema V17 is required**; existing V1–V16 migrations remain unchanged. Integration API 3 remains compatible, with additive lineage endpoints.
+The current implementation adds a minimal light-blue workspace, browse-first formula/metric/transformation libraries, guided creation and report mapping, registered-metadata SQL suggestions, catalog sections and filters, explainable change impact, source-mapping suggestions and independent governance reviews. **Schema V18 is required**; existing V1–V17 migrations remain unchanged. Integration API 3 remains compatible, with additive product endpoints.
 
-Open [TRACE Data Flow](http://127.0.0.1:5173/#data-flow), then use Lineage, Transformations, Formula Studio, Metrics, Report Mappings and Impact Analysis. See the [implementation and acceptance report](docs/verification/lineage-overhaul/README.md) for precise inventory, preservation checks, test results, browser evidence and remaining limits. The source code is implemented and running locally; final screenshot refresh and responsive browser checks are complete for the documented scenarios.
+Open [TRACE](http://127.0.0.1:5173/#overview). Use Catalog to understand an existing dataset, Transformations / Formula Studio / Metrics to browse existing definitions, Reporting to inspect usage, and Impact Analysis / Governance to plan and review changes. See the [product-experience verification report](docs/verification/product-experience/README.md) for implementation details, exact changes, preservation results, executed tests, real screenshots and remaining verification limits. The [previous lineage report](docs/verification/lineage-overhaul/README.md) remains the historical baseline for the graph engine and NovaMart evidence.
+
+The V17→V18 local rollout took a database backup and verified every existing table fingerprint, roles and encryption-key file. It did not reset the database, rotate credentials, deploy SQL, or modify cloud data. Browser writes for approval, creation and mapping acceptance used a separate disposable database.
 
 The NovaMart SQL and synthetic dataset folder was published to [infta_training_novamart](https://github.com/rishikknr/infta_training_novamart/tree/cbbe4b742f3978fc4ecc41dd560a5c5fddc01234), with credential values replaced by placeholders in the published copy. Existing local files were preserved.
 
-The sections below retain the earlier foundation and rollout history. Prefer the current report for lineage APIs and release requirements.
+The sections below retain the earlier foundation and rollout history. Prefer the current product-experience report for release requirements; the sections below describe earlier releases.
 
 ---
 

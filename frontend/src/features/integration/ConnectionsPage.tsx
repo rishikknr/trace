@@ -1,3 +1,4 @@
+import { SuggestedMappings } from "./SuggestedMappings";
 import { useEffect, useState } from "react";
 import type { Connection, Session } from "../../types/api";
 import { mutate, request } from "../../services/api";
@@ -313,6 +314,7 @@ export function ConnectionsPage({
                     )}
                   </details>
                 )}
+                {!discovery && Number(selected.registered_asset_count) > 0 && <SuggestedMappings session={session} source={selected.id}/>}
                 <DiscoveryHistory
                   connection={selected.id}
                   revision={action.revision + revision}

@@ -124,6 +124,11 @@ export function EmptyState({
 }
 
 const tones: Record<string, string> = {
+  SUBMITTED: "neutral",
+  UNDER_REVIEW: "neutral",
+  CHANGES_REQUESTED: "warning",
+  APPROVED: "success",
+  REJECTED: "error",
   PARSED: "success",
   INVALID: "error",
   UNRESOLVED: "warning",

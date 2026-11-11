@@ -165,7 +165,9 @@ it("requires analysis and explicit confirmation before saving SQL relationships"
   expect(
     screen.queryByRole("button", { name: "Confirm selected dependencies" }),
   ).toBeNull();
-  await userEvent.type(screen.getByLabelText("SQL definition"), "SELECT 1");
+  await userEvent.click(screen.getByRole("button",{name:"Review new SQL",exact:true}));
+  await userEvent.click(screen.getByLabelText("SQL definition"));
+  await userEvent.keyboard("SELECT 1");
   await userEvent.click(
     screen.getByRole("button", { name: "Analyze dependency candidates" }),
   );
@@ -218,7 +220,7 @@ it("renders a persisted structured metric snapshot without crashing the detail w
   );
   render(<MetricsPage session={session} mappingsOnly={false} />);
   await userEvent.click(
-    await screen.findByRole("button", { name: /Test metric\s*TEST_METRIC/ }),
+    await screen.findByRole("button", { name: "Test metric",exact:true }),
   );
   await screen.findByRole("heading", { name: "Test metric", exact: true });
   const summary = await screen.findByText(

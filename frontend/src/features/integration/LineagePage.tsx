@@ -1,3 +1,4 @@
+import { ContextNote, Steps } from "../../components/Workflow";
 import { usePage, loadOptions } from "./paging";
 import { Pager } from "./pagination";
 import { useEffect, useState } from "react";
@@ -43,6 +44,11 @@ export function LineagePage({
   initialRoot?: string;
   impact?: boolean;
 }) {
+  const [scenario, setScenario] = useState(
+    new URLSearchParams(initialRoot?.split("?")[1]).get("change") ||
+      "Modify SQL transformation",
+  );
+  const [impactView, setImpactView] = useState("results");
   const a = useAction(),
     w = useWorkspace(a.revision, { assets: true });
   const [root, setRoot] = useState(initialRoot?.split("?")[0] ?? ""),
@@ -70,8 +76,10 @@ export function LineagePage({
     ),
     [rootColumns, setRootColumns] = useState<AssetColumn[]>([]),
     [direction, setDirection] = useState(
-      new URLSearchParams(initialRoot?.split("?")[1]).get("direction") ||
-        (impact ? "downstream" : "both"),
+      impact
+        ? "downstream"
+        : new URLSearchParams(initialRoot?.split("?")[1]).get("direction") ||
+            "both",
     ),
     [sourceColumns, setSourceColumns] = useState<AssetColumn[]>([]),
     [targetColumns, setTargetColumns] = useState<AssetColumn[]>([]),
@@ -118,11 +126,12 @@ export function LineagePage({
   }, [root, w.assets]);
   function explore(id: string, dir = direction, column = "") {
     setRoot(id);
+    setRootColumns([]);
     setDirection(dir);
     setOffset(0);
     setSnapshot("");
     setColumnId(column);
-    window.location.hash = `${impact || mode === "impact" ? "impact" : "lineage"}/${id}?direction=${dir}${column ? `&column=${column}` : ""}`;
+    window.location.hash = `${impact || mode === "impact" ? "impact" : "lineage"}/${id}?direction=${dir}${column ? `&column=${column}` : ""}${impact ? `&change=${encodeURIComponent(scenario)}` : ""}`;
   }
 
   useEffect(() => {
@@ -153,13 +162,14 @@ export function LineagePage({
     <>
       <PageHeader
         area="Workspace"
-        title={impact ? "Change impact" : "Lineage workspace"}
+        title={impact ? "Impact Analysis" : "Data Flow"}
         description={
           impact
             ? "Trace the potential effects of a hypothetical change through recorded dependencies."
             : "Follow your data across systems, transformations and business definitions."
         }
         actions={
+          !impact &&
           writable.length > 0 && (
             <a
               className="button primary"
@@ -180,334 +190,408 @@ export function LineagePage({
       />
       <Feedback error={a.error ?? w.error ?? error ?? graphError} />
       {a.notice && <Success>{a.notice}</Success>}
-      <nav className="lineage-modes" aria-label="Lineage modes">
-        <a className="button" href="#data-flow">
-          System lineage
-        </a>
-        {["dataset", "column", "metric", "impact"].map((m) => (
-          <button
-            key={m}
-            aria-pressed={mode === m}
-            onClick={() => {
-              setMode(m);
-              setOffset(0);
-              setSnapshot("");
-              setColumnId("");
-              if (m === "impact") setDirection("downstream");
-            }}
-          >
-            {humanize(m)} lineage
-          </button>
-        ))}
-      </nav>
-      <div className="lineage-three-panel">
-        <aside
-          className="lineage-explorer"
-          aria-label="Source and asset explorer"
-        >
-          <p className="eyebrow">Explorer</p>
-          <h2>Registered environment</h2>
-          <label>
-            Find an asset
-            <input
-              type="search"
-              value={explorerQuery}
-              onChange={(e) => setExplorerQuery(e.target.value)}
-              placeholder="Name, schema or source…"
-            />
-          </label>
-          <label>
-            Direction
-            <select
-              value={direction}
-              onChange={(e) => {
-                if (root) explore(root, e.target.value, columnId);
-                else setDirection(e.target.value);
-              }}
-            >
-              <option value="both">Upstream + downstream</option>
-              <option value="upstream">Upstream only</option>
-              <option value="downstream">Downstream potential impact</option>
-            </select>
-          </label>
-          <label>
-            Asset type filter
-            <select
-              value={assetTypeFilter}
-              onChange={(e) => setAssetTypeFilter(e.target.value)}
-            >
-              <option value="">All asset types</option>
-              {[...new Set(w.assets.map((x) => x.asset_type))]
-                .sort()
-                .map((type) => (
-                  <option key={type} value={type}>
-                    {humanize(type)}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <p className="hint">
-            All reachable levels · up to 80 relationships per page
-          </p>
-          {w.loading && <Loading>Loading sources…</Loading>}
-          {[...new Set(explorerAssets.map((x) => x.connection_name))].map(
-            (connection) => (
-              <details key={connection} open>
-                <summary>
-                  {connection}
-                  <span className="badge">
-                    {
-                      explorerAssets.filter(
-                        (x) => x.connection_name === connection,
-                      ).length
-                    }
-                  </span>
-                </summary>
-                {[
-                  ...new Set(
-                    explorerAssets
-                      .filter((x) => x.connection_name === connection)
-                      .map((x) =>
-                        x.asset_type === "SQL_TRANSFORMATION"
-                          ? "SQL transformations"
-                          : x.platform === "SNOWFLAKE"
-                            ? x.external_key.split(".").slice(0, 2).join(".")
-                            : humanize(x.asset_type),
-                      ),
-                  ),
-                ].map((schema) => (
-                  <details
-                    key={schema}
-                    open={!!explorerQuery || schema.includes("ANALYTICS")}
-                  >
-                    <summary>{schema}</summary>
-                    {explorerAssets
-                      .filter(
-                        (x) =>
-                          x.connection_name === connection &&
-                          (x.asset_type === "SQL_TRANSFORMATION"
-                            ? "SQL transformations"
-                            : x.platform === "SNOWFLAKE"
-                              ? x.external_key.split(".").slice(0, 2).join(".")
-                              : humanize(x.asset_type)) === schema &&
-                          `${x.name} ${x.external_key}`
-                            .toLowerCase()
-                            .includes(explorerQuery.toLowerCase()),
-                      )
-                      .map((asset) => (
-                        <button
-                          className="explorer-asset"
-                          aria-pressed={root === asset.id}
-                          key={asset.id}
-                          onClick={() => explore(asset.id)}
-                          title={asset.external_key}
-                        >
-                          {asset.name}
-                        </button>
-                      ))}
-                  </details>
-                ))}
-              </details>
-            ),
-          )}
-        </aside>
-        <section className="lineage-main">
-          {!root ? (
-            <DataFlowOverview onExplore={explore} />
-          ) : (
-            <>
-              <header className="graph-scope">
-                <div>
-                  <p className="eyebrow">
-                    {mode === "impact"
-                      ? "Hypothetical change"
-                      : "Recorded dependency graph"}
-                  </p>
-                  <h2>
-                    {w.assets.find((x) => x.id === root)?.name ||
-                      graph?.nodes.find((x) => x.id === root)?.name ||
-                      "Selected registry resource"}
-                  </h2>
-                </div>
+      {impact && !root ? (
+        <ImpactStart
+          assets={w.assets}
+          loading={w.loading}
+          scenario={scenario}
+          onScenario={setScenario}
+          onAnalyze={(id, column) => explore(id, "downstream", column)}
+        />
+      ) : (
+        <>
+          {!impact && (
+            <nav className="lineage-modes" aria-label="Lineage modes">
+              <a className="button" href="#data-flow">
+                System lineage
+              </a>
+              {["dataset", "column", "metric", "impact"].map((m) => (
                 <button
+                  key={m}
+                  aria-pressed={mode === m}
                   onClick={() => {
+                    setMode(m);
                     setOffset(0);
                     setSnapshot("");
-                    a.setNotice("");
-                    setResource(null);
-                    void request<Graph>(
-                      `/lineage/${root}?direction=${direction}&limit=80${columnId ? `&columnId=${columnId}` : ""}`,
-                    )
-                      .then((value) =>
-                        setResource({
-                          key: graphKey,
-                          graph: value,
-                          error: null,
-                        }),
-                      )
-                      .catch((e) => setError(e));
+                    setColumnId("");
+                    if (m === "impact") setDirection("downstream");
                   }}
                 >
-                  Refresh graph
+                  {humanize(m)} lineage
                 </button>
-              </header>
-              {(mode === "column" || mode === "impact" || columnId) && (
-                <div className="graph-scenario">
-                  <label>
-                    Column scope
-                    <select
-                      value={columnId}
-                      onChange={(e) => {
-                        setColumnId(e.target.value);
-                        setOffset(0);
-                        setSnapshot("");
-                      }}
-                    >
-                      <option value="">Entire asset</option>
-                      {rootColumns.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name} · {c.data_type}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  {mode === "impact" && (
-                    <label>
-                      Proposed change
-                      <select>
-                        <option>Modify definition or expression</option>
-                        <option>Remove dataset or source object</option>
-                        <option>Rename column</option>
-                        <option>Change data type</option>
-                        <option>Register new metric version</option>
-                      </select>
-                    </label>
-                  )}
-                  <p className="hint">
-                    {mode === "impact"
-                      ? "Read-only scenario. Dependencies indicate potential effects; external systems are unchanged."
-                      : "Only recorded column dependencies are shown. Missing mappings remain unknown."}
-                  </p>
-                </div>
-              )}
-              {!graph && !graphError && (
-                <Loading>Traversing recorded dependencies…</Loading>
-              )}
-              {graph && (
-                <>
-                  <div className="graph-statbar" role="status">
-                    <strong>{graph.totalNodes} reachable nodes</strong>
-                    <span>{graph.totalEdges} recorded relationships</span>
-                    <span>No depth limit</span>
-                  </div>
-                  {mode === "metric" &&
-                    !graph.nodes.some(
-                      (n) => n.asset_type === "METRIC_VERSION",
-                    ) && (
-                      <p className="notice">
-                        No registered metric version is reachable in this scope.{" "}
-                        <a href="#metrics">Open metric registry</a>
-                      </p>
-                    )}
-                  <LineageGraph
-                    key={mode}
-                    root={
-                      mode === "metric"
-                        ? graph.nodes.find(
-                            (n) => n.asset_type === "METRIC_VERSION",
-                          )?.id || root
-                        : columnId || root
-                    }
-                    nodes={graph.nodes}
-                    edges={graph.edges}
-                    onExplore={(id, dir) => {
-                      const n = graph.nodes.find((x) => x.id === id);
-                      if (n?.asset_type === "COLUMN") {
-                        const m = JSON.parse(n.metadata || "{}");
-                        explore(String(m.assetId), dir);
-                        setColumnId(id);
-                      } else explore(id, dir);
-                    }}
-                  />
-                  <div className="graph-pagination">
-                    <p>
-                      Showing relationships{" "}
-                      {graph.edges.length ? offset + 1 : 0}–
-                      {offset + graph.edges.length} of {graph.totalEdges}.{" "}
-                      {graph.truncated
-                        ? "This is a portion of the complete reachable graph; continue to inspect the remaining relationships."
-                        : "Complete reachable graph shown."}
-                    </p>
-                    <button
-                      disabled={offset === 0}
-                      onClick={() => setOffset(Math.max(0, offset - 80))}
-                    >
-                      Previous graph page
-                    </button>
-                    <button
-                      disabled={!graph.hasMore}
-                      onClick={() => {
-                        setSnapshot(graph.snapshot);
-                        setOffset(graph.nextOffset);
-                      }}
-                    >
-                      Continue exploration
-                    </button>
-                  </div>
-                  {mode === "impact" && (
-                    <ImpactSummary
-                      graph={graph}
-                      root={columnId || root}
-                      assetRoot={root}
-                      columnId={columnId}
-                    />
-                  )}
-                  <details className="panel">
-                    <summary>Relationship evidence and mapping history</summary>
-                    {graph.edges.map((e) => (
-                      <details key={e.id}>
-                        <summary>
-                          {
-                            graph.nodes.find((n) => n.id === e.source_asset_id)
-                              ?.name
-                          }{" "}
-                          →{" "}
-                          {
-                            graph.nodes.find((n) => n.id === e.target_asset_id)
-                              ?.name
-                          }
-                        </summary>
-                        <p>
-                          {humanize(e.provenance)} · {e.evidence_ref}
-                        </p>
-                        <p>{e.description}</p>
-                        {!e.relationship_type.startsWith("METRIC_") &&
-                          !e.relationship_type.startsWith("FORMULA_") &&
-                          writable.some((x) => x.id === e.source_asset_id) &&
-                          writable.some((x) => x.id === e.target_asset_id) && (
-                            <button
-                              onClick={() =>
-                                setConfirm({
-                                  id: e.id,
-                                  column:
-                                    e.relationship_type === "COLUMN_DERIVATION",
-                                })
-                              }
-                            >
-                              Revoke mapping
-                            </button>
-                          )}
-                      </details>
-                    ))}
-                    <MappingHistory root={root} revision={a.revision} />
-                  </details>
-                </>
-              )}
+              ))}
+            </nav>
+          )}
+          {impact && root && (
+            <>
+              <Steps
+                labels={["Choose change", "Select resource", "Inspect impact"]}
+                current={2}
+              />
+              <ContextNote
+                title={`${scenario} · ${w.assets.find((a) => a.id === root)?.external_key || "Selected registered definition"}`}
+              >
+                This is a read-only dependency assessment. The proposed change
+                labels the scenario; Trace does not simulate SQL execution or
+                guarantee breakage.{" "}
+                <a href="#impact">Start another analysis →</a>
+              </ContextNote>
             </>
           )}
-        </section>
-      </div>
-      {writable.length > 0 && (
+          <div
+            className={`lineage-three-panel${impact ? " impact-workspace" : ""}`}
+          >
+            <aside
+              hidden={impact}
+              className="lineage-explorer"
+              aria-label="Source and asset explorer"
+            >
+              <p className="eyebrow">Explorer</p>
+              <h2>Registered environment</h2>
+              <label>
+                Find an asset
+                <input
+                  type="search"
+                  value={explorerQuery}
+                  onChange={(e) => setExplorerQuery(e.target.value)}
+                  placeholder="Name, schema or source…"
+                />
+              </label>
+              <label>
+                Direction
+                <select
+                  value={direction}
+                  onChange={(e) => {
+                    if (root) explore(root, e.target.value, columnId);
+                    else setDirection(e.target.value);
+                  }}
+                >
+                  <option value="both">Upstream + downstream</option>
+                  <option value="upstream">Upstream only</option>
+                  <option value="downstream">
+                    Downstream potential impact
+                  </option>
+                </select>
+              </label>
+              <label>
+                Asset type filter
+                <select
+                  value={assetTypeFilter}
+                  onChange={(e) => setAssetTypeFilter(e.target.value)}
+                >
+                  <option value="">All asset types</option>
+                  {[...new Set(w.assets.map((x) => x.asset_type))]
+                    .sort()
+                    .map((type) => (
+                      <option key={type} value={type}>
+                        {humanize(type)}
+                      </option>
+                    ))}
+                </select>
+              </label>
+              <p className="hint">
+                All reachable levels · up to 80 relationships per page
+              </p>
+              {w.loading && <Loading>Loading sources…</Loading>}
+              {[...new Set(explorerAssets.map((x) => x.connection_name))].map(
+                (connection) => (
+                  <details key={connection} open>
+                    <summary>
+                      {connection}
+                      <span className="badge">
+                        {
+                          explorerAssets.filter(
+                            (x) => x.connection_name === connection,
+                          ).length
+                        }
+                      </span>
+                    </summary>
+                    {[
+                      ...new Set(
+                        explorerAssets
+                          .filter((x) => x.connection_name === connection)
+                          .map((x) =>
+                            x.asset_type === "SQL_TRANSFORMATION"
+                              ? "SQL transformations"
+                              : x.platform === "SNOWFLAKE"
+                                ? x.external_key
+                                    .split(".")
+                                    .slice(0, 2)
+                                    .join(".")
+                                : humanize(x.asset_type),
+                          ),
+                      ),
+                    ].map((schema) => (
+                      <details
+                        key={schema}
+                        open={!!explorerQuery || schema.includes("ANALYTICS")}
+                      >
+                        <summary>{schema}</summary>
+                        {explorerAssets
+                          .filter(
+                            (x) =>
+                              x.connection_name === connection &&
+                              (x.asset_type === "SQL_TRANSFORMATION"
+                                ? "SQL transformations"
+                                : x.platform === "SNOWFLAKE"
+                                  ? x.external_key
+                                      .split(".")
+                                      .slice(0, 2)
+                                      .join(".")
+                                  : humanize(x.asset_type)) === schema &&
+                              `${x.name} ${x.external_key}`
+                                .toLowerCase()
+                                .includes(explorerQuery.toLowerCase()),
+                          )
+                          .map((asset) => (
+                            <button
+                              className="explorer-asset"
+                              aria-pressed={root === asset.id}
+                              key={asset.id}
+                              onClick={() => explore(asset.id)}
+                              title={asset.external_key}
+                            >
+                              {asset.name}
+                            </button>
+                          ))}
+                      </details>
+                    ))}
+                  </details>
+                ),
+              )}
+            </aside>
+            <section className="lineage-main">
+              {!root ? (
+                <DataFlowOverview onExplore={explore} />
+              ) : (
+                <>
+                  <header className="graph-scope">
+                    <div>
+                      <p className="eyebrow">
+                        {mode === "impact"
+                          ? "Hypothetical change"
+                          : "Recorded dependency graph"}
+                      </p>
+                      <h2>
+                        {w.assets.find((x) => x.id === root)?.name ||
+                          graph?.nodes.find((x) => x.id === root)?.name ||
+                          "Selected registry resource"}
+                      </h2>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setOffset(0);
+                        setSnapshot("");
+                        a.setNotice("");
+                        setResource(null);
+                        void request<Graph>(
+                          `/lineage/${root}?direction=${direction}&limit=80${columnId ? `&columnId=${columnId}` : ""}`,
+                        )
+                          .then((value) =>
+                            setResource({
+                              key: graphKey,
+                              graph: value,
+                              error: null,
+                            }),
+                          )
+                          .catch((e) => setError(e));
+                      }}
+                    >
+                      Refresh graph
+                    </button>
+                  </header>
+                  {(mode === "column" || mode === "impact" || columnId) && (
+                    <div className="graph-scenario">
+                      <label>
+                        Column scope
+                        <select
+                          value={columnId}
+                          onChange={(e) => {
+                            setColumnId(e.target.value);
+                            setOffset(0);
+                            setSnapshot("");
+                          }}
+                        >
+                          <option value="">Entire asset</option>
+                          {rootColumns.map((c) => (
+                            <option key={c.id} value={c.id}>
+                              {c.name} · {c.data_type}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      {mode === "impact" && (
+                        <label>
+                          Proposed change
+                          <select
+                            value={scenario}
+                            onChange={(e) => setScenario(e.target.value)}
+                          >
+                            {changeScenarios.map((s) => (
+                              <option key={s[0]}>{s[0]}</option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
+                      <p className="hint">
+                        {mode === "impact"
+                          ? "Read-only scenario. Dependencies indicate potential effects; external systems are unchanged."
+                          : "Only recorded column dependencies are shown. Missing mappings remain unknown."}
+                      </p>
+                    </div>
+                  )}
+                  {!graph && !graphError && (
+                    <Loading>Traversing recorded dependencies…</Loading>
+                  )}
+                  {graph && (
+                    <>
+                      <div className="graph-statbar" role="status">
+                        <strong>{graph.totalNodes} reachable nodes</strong>
+                        <span>{graph.totalEdges} recorded relationships</span>
+                        <span>No depth limit</span>
+                      </div>
+                      {mode === "metric" &&
+                        !graph.nodes.some(
+                          (n) => n.asset_type === "METRIC_VERSION",
+                        ) && (
+                          <p className="notice">
+                            No registered metric version is reachable in this
+                            scope. <a href="#metrics">Open metric registry</a>
+                          </p>
+                        )}
+                      {mode === "impact" && (
+                        <>
+                          <nav
+                            className="workbench-tabs impact-view-tabs"
+                            aria-label="Impact views"
+                          >
+                            <button
+                              aria-pressed={impactView === "results"}
+                              onClick={() => setImpactView("results")}
+                            >
+                              Affected resources & paths
+                            </button>
+                            <button
+                              aria-pressed={impactView === "graph"}
+                              onClick={() => setImpactView("graph")}
+                            >
+                              Dependency graph
+                            </button>
+                          </nav>
+                          {impactView === "results" && (
+                            <ImpactSummary
+                              graph={graph}
+                              root={columnId || root}
+                              assetRoot={root}
+                              columnId={columnId}
+                            />
+                          )}
+                        </>
+                      )}
+                      {(mode !== "impact" || impactView === "graph") && (
+                        <LineageGraph
+                          key={mode}
+                          root={
+                            mode === "metric"
+                              ? graph.nodes.find(
+                                  (n) => n.asset_type === "METRIC_VERSION",
+                                )?.id || root
+                              : columnId || root
+                          }
+                          nodes={graph.nodes}
+                          edges={graph.edges}
+                          onExplore={(id, dir) => {
+                            const n = graph.nodes.find((x) => x.id === id);
+                            if (n?.asset_type === "COLUMN") {
+                              const m = JSON.parse(n.metadata || "{}");
+                              explore(String(m.assetId), dir);
+                              setColumnId(id);
+                            } else explore(id, dir);
+                          }}
+                        />
+                      )}
+                      <div className="graph-pagination">
+                        <p>
+                          Showing relationships{" "}
+                          {graph.edges.length ? offset + 1 : 0}–
+                          {offset + graph.edges.length} of {graph.totalEdges}.{" "}
+                          {graph.truncated
+                            ? "This is a portion of the complete reachable graph; continue to inspect the remaining relationships."
+                            : "Complete reachable graph shown."}
+                        </p>
+                        <button
+                          disabled={offset === 0}
+                          onClick={() => setOffset(Math.max(0, offset - 80))}
+                        >
+                          Previous graph page
+                        </button>
+                        <button
+                          disabled={!graph.hasMore}
+                          onClick={() => {
+                            setSnapshot(graph.snapshot);
+                            setOffset(graph.nextOffset);
+                          }}
+                        >
+                          Continue exploration
+                        </button>
+                      </div>
+                      <details className="panel">
+                        <summary>
+                          Relationship evidence and mapping history
+                        </summary>
+                        {graph.edges.map((e) => (
+                          <details key={e.id}>
+                            <summary>
+                              {
+                                graph.nodes.find(
+                                  (n) => n.id === e.source_asset_id,
+                                )?.name
+                              }{" "}
+                              →{" "}
+                              {
+                                graph.nodes.find(
+                                  (n) => n.id === e.target_asset_id,
+                                )?.name
+                              }
+                            </summary>
+                            <p>
+                              {humanize(e.provenance)} · {e.evidence_ref}
+                            </p>
+                            <p>{e.description}</p>
+                            {!e.relationship_type.startsWith("METRIC_") &&
+                              !e.relationship_type.startsWith("FORMULA_") &&
+                              writable.some(
+                                (x) => x.id === e.source_asset_id,
+                              ) &&
+                              writable.some(
+                                (x) => x.id === e.target_asset_id,
+                              ) && (
+                                <button
+                                  onClick={() =>
+                                    setConfirm({
+                                      id: e.id,
+                                      column:
+                                        e.relationship_type ===
+                                        "COLUMN_DERIVATION",
+                                    })
+                                  }
+                                >
+                                  Revoke mapping
+                                </button>
+                              )}
+                          </details>
+                        ))}
+                        <MappingHistory root={root} revision={a.revision} />
+                      </details>
+                    </>
+                  )}
+                </>
+              )}
+            </section>
+          </div>
+        </>
+      )}
+      {!impact && writable.length > 0 && (
         <details className="manual-mapping-disclosure">
           <summary>Declare an evidence-backed relationship</summary>
           <form
@@ -671,6 +755,163 @@ function MappingHistory({
   );
 }
 
+const changeScenarios = [
+  [
+    "Remove a column",
+    "Find calculations and consumers that use a recorded field.",
+  ],
+  ["Rename a column", "Review references that may need a new field name."],
+  [
+    "Change a data type",
+    "Inspect downstream expressions for compatibility review.",
+  ],
+  [
+    "Modify SQL transformation",
+    "See the datasets and definitions downstream of an output.",
+  ],
+  [
+    "Change a formula",
+    "Inspect dependencies of a registered calculation version.",
+  ],
+  [
+    "Register metric version",
+    "Review consumers of an existing metric definition.",
+  ],
+  [
+    "Remove a source dataset",
+    "Follow all recorded downstream dependency paths.",
+  ],
+  ["Change view definition", "Inspect the consumers of a registered view."],
+];
+function ImpactStart({
+  assets,
+  loading,
+  scenario,
+  onScenario,
+  onAnalyze,
+}: {
+  assets: import("../../types/api").Asset[];
+  loading: boolean;
+  scenario: string;
+  onScenario: (s: string) => void;
+  onAnalyze: (id: string, column: string) => void;
+}) {
+  const [asset, setAsset] = useState(""),
+    [column, setColumn] = useState(""),
+    [columns, setColumns] = useState<AssetColumn[]>([]),
+    [error, setError] = useState<unknown>(null);
+  const columnChange =
+    scenario.toLowerCase().includes("column") ||
+    scenario === "Change a data type";
+  useEffect(() => {
+    if (!asset) return;
+    let active = true;
+    loadOptions<AssetColumn>("columns", { parent: asset })
+      .then((c) => {
+        if (active) {
+          setColumns(c);
+          setError(null);
+        }
+      })
+      .catch((e) => {
+        if (active) setError(e);
+      });
+    return () => {
+      active = false;
+    };
+  }, [asset]);
+  return (
+    <div className="scenario-start">
+      <Steps
+        labels={["Choose change", "Select resource", "Inspect impact"]}
+        current={asset ? 1 : 0}
+      />
+      <h2>What are you planning to change?</h2>
+      <p className="muted">
+        Choose a scenario, then a registered dataset or field. Trace follows
+        recorded dependencies to help you decide what needs review.
+      </p>
+      <div className="scenario-grid">
+        {changeScenarios.map(([name, description]) => (
+          <button
+            key={name}
+            className="scenario-option"
+            aria-pressed={scenario === name}
+            onClick={() => {
+              onScenario(name);
+              setColumn("");
+            }}
+          >
+            <Icon
+              name={name.includes("column") ? "catalog" : "code"}
+              size={18}
+            />
+            <span>
+              {name}
+              <small>{description}</small>
+            </span>
+          </button>
+        ))}
+      </div>
+      <section className="panel">
+        <h2>Choose the affected resource</h2>
+        {loading ? (
+          <Loading>Loading registered datasets…</Loading>
+        ) : (
+          <>
+            <AssetSelect
+              assets={assets.filter(
+                (a) => a.asset_type !== "SQL_TRANSFORMATION",
+              )}
+              name="impactAsset"
+              label="Dataset or reporting resource"
+              value={asset}
+              onChange={(id) => {
+                setAsset(id);
+                setColumn("");
+              }}
+            />
+            <small>
+              For a formula or metric version, open its detail page and follow
+              its lineage or impact link.
+            </small>
+            {columnChange && (
+              <label>
+                Column
+                <select
+                  value={column}
+                  onChange={(e) => setColumn(e.target.value)}
+                  disabled={!asset}
+                >
+                  <option value="">Select a registered field</option>
+                  {columns.map((c) => (
+                    <option value={c.id} key={c.id}>
+                      {c.name} · {c.data_type}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            <Feedback error={error} />
+            <ContextNote title="What this analysis can tell you">
+              Direct dependencies reference the selected resource. Transitive
+              dependencies are reachable through those links. Missing lineage
+              and unregistered reporting consumers remain unknown.
+            </ContextNote>
+            <button
+              className="primary"
+              disabled={!asset || (columnChange && !column)}
+              onClick={() => onAnalyze(asset, columnChange ? column : "")}
+            >
+              Analyze recorded impact →
+            </button>
+          </>
+        )}
+      </section>
+    </div>
+  );
+}
+
 function ImpactSummary({
   graph,
   root,
@@ -688,6 +929,7 @@ function ImpactSummary({
     hasMore: boolean;
     nextOffset: number;
   } | null>(null);
+  const [category, setCategory] = useState("all");
   const [pathTarget, setPathTarget] = useState("");
   const [error, setError] = useState<unknown>(null);
   async function showPath(target: string, offset = 0) {
@@ -726,11 +968,19 @@ function ImpactSummary({
       {path && (
         <div className="definition-summary">
           <strong>Complete recorded path · {path.totalNodes} nodes</strong>
-          <p>
-            {path.nodes
-              .map((n) => (n.asset_type === "COLUMN" ? n.external_key : n.name))
-              .join(" → ")}
-          </p>
+          <ol className="recorded-path">
+            {path.nodes.map((n, i) => (
+              <li key={n.id}>
+                <span>{i + 1}</span>
+                <div>
+                  <strong>
+                    {n.asset_type === "COLUMN" ? n.external_key : n.name}
+                  </strong>
+                  <small>{humanize(n.asset_type)}</small>
+                </div>
+              </li>
+            ))}
+          </ol>
           <button
             disabled={!path.hasMore}
             onClick={() => void showPath(pathTarget, path.nextOffset)}
@@ -759,8 +1009,39 @@ function ImpactSummary({
           </div>
         ))}
       </div>
+      <nav className="workbench-tabs" aria-label="Affected resource categories">
+        {[
+          ["all", "All dependencies"],
+          ["direct", "Direct"],
+          ["transitive", "Transitive"],
+          ["definitions", "Formulas & metrics"],
+          ["reporting", "Reporting"],
+        ].map(([key, label]) => (
+          <button
+            key={key}
+            aria-pressed={category === key}
+            onClick={() => setCategory(key)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
       {[...paths.entries()]
-        .filter(([id]) => id !== root)
+        .filter(
+          ([id, p]) =>
+            id !== root &&
+            (category === "all" ||
+              (category === "direct" && p.length === 2) ||
+              (category === "transitive" && p.length > 2) ||
+              (category === "definitions" &&
+                ["FORMULA_VERSION", "METRIC_VERSION"].includes(
+                  graph.nodes.find((n) => n.id === id)?.asset_type || "",
+                )) ||
+              (category === "reporting" &&
+                ["REPORT", "VISUAL", "SEMANTIC_MODEL", "MEASURE"].includes(
+                  graph.nodes.find((n) => n.id === id)?.asset_type || "",
+                ))),
+        )
         .map(([id, path]) => (
           <div className="impact-path" key={id}>
             <strong>{name(id)}</strong>
@@ -769,7 +1050,12 @@ function ImpactSummary({
                 ? "Direct recorded dependency"
                 : "Potential transitive effect"}
             </span>
-            <p>{path.map(name).join(" → ")}</p>
+            <details>
+              <summary>
+                Why this resource appears · {path.length - 1} recorded steps
+              </summary>
+              <p>{path.map(name).join(" → ")}</p>
+            </details>
             <button onClick={() => void showPath(id)}>
               Inspect complete recorded path
             </button>

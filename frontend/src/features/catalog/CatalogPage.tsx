@@ -1,3 +1,6 @@
+import { AssetRelationships } from "./AssetRelationships";
+import { ContextNote } from "../../components/Workflow";
+import { useWorkspace } from "../integration/hooks";
 import { AssetActivity } from "./AssetActivity";
 import { request } from "../../services/api";
 import { JsonDetails } from "../integration/shared";
@@ -24,25 +27,43 @@ export function CatalogPage({
   canImport,
   initialQuery = "",
   initialSource,
+  initialOwner = "",
+  initialFreshness = "",
   transformationsOnly = false,
 }: {
   session: Session;
   canImport: boolean;
   initialQuery?: string;
   initialSource?: string;
+  initialOwner?: string;
+  initialFreshness?: string;
   transformationsOnly?: boolean;
 }) {
   const [type, setType] = useState("");
   const [sort, setSort] = useState("");
+  const [connection, setConnection] = useState(initialSource || "");
+  const [database, setDatabase] = useState("");
+  const [schema, setSchema] = useState("");
+  const [owner, setOwner] = useState(initialOwner);
+  const [freshness, setFreshness] = useState(initialFreshness);
+  const [lineage, setLineage] = useState("");
+  const workspace = useWorkspace(0, { connections: true, assets: true });
   const source =
-    initialSource && /^[a-f0-9-]{36}$/i.test(initialSource)
-      ? initialSource
-      : undefined;
+    connection && /^[a-f0-9-]{36}$/i.test(connection) ? connection : undefined;
   const effectiveType = transformationsOnly ? "SQL_TRANSFORMATION" : type;
   const assets = usePage<Asset>(
     "assets",
     0,
-    { type: effectiveType, sort, ...(source ? { source } : {}) },
+    {
+      type: effectiveType,
+      sort,
+      database,
+      schema,
+      owner,
+      freshness,
+      lineage,
+      ...(source ? { source } : {}),
+    },
     true,
     initialQuery,
   );
@@ -62,7 +83,7 @@ export function CatalogPage({
     <>
       <PageHeader
         area={transformationsOnly ? "Definitions" : "Workspace"}
-        title={transformationsOnly ? "Transformations" : "Metadata catalog"}
+        title={transformationsOnly ? "Transformations" : "Dataset catalog"}
         description={
           transformationsOnly
             ? "Browse registered SQL transformations and their source evidence."
@@ -98,6 +119,116 @@ export function CatalogPage({
           <a href="#catalog">Clear source filter</a>
         </div>
       )}
+      <div className="library-filters" aria-label="Catalog filters">
+        <label>
+          Source
+          <select
+            value={connection}
+            onChange={(e) => setConnection(e.target.value)}
+          >
+            <option value="">All sources</option>
+            {workspace.connections.map((c) => (
+              <option value={c.id} key={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Database
+          <select
+            value={database}
+            onChange={(e) => {
+              setDatabase(e.target.value);
+              setSchema("");
+            }}
+          >
+            <option value="">All databases</option>
+            {[
+              ...new Set(
+                workspace.assets
+                  .filter(
+                    (a) =>
+                      a.platform === "SNOWFLAKE" &&
+                      a.asset_type !== "SQL_TRANSFORMATION" &&
+                      (!connection || a.connection_id === connection),
+                  )
+                  .map((a) => a.external_key.split(".")[0]),
+              ),
+            ]
+              .sort()
+              .map((d) => (
+                <option key={d}>{d}</option>
+              ))}
+          </select>
+        </label>
+        <label>
+          Schema
+          <select value={schema} onChange={(e) => setSchema(e.target.value)}>
+            <option value="">All schemas</option>
+            {[
+              ...new Set(
+                workspace.assets
+                  .filter(
+                    (a) =>
+                      a.platform === "SNOWFLAKE" &&
+                      a.asset_type !== "SQL_TRANSFORMATION" &&
+                      (!database || a.external_key.split(".")[0] === database),
+                  )
+                  .map((a) => a.external_key.split(".")[1]),
+              ),
+            ]
+              .sort()
+              .map((d) => (
+                <option key={d}>{d}</option>
+              ))}
+          </select>
+        </label>
+        <label>
+          Ownership
+          <select value={owner} onChange={(e) => setOwner(e.target.value)}>
+            <option value="">All owners</option>
+            <option value="missing">Technical owner missing</option>
+            {[
+              ...new Map(
+                workspace.assets.map((a) => [
+                  a.owner_team_id,
+                  a.owner_team_name,
+                ]),
+              ).entries(),
+            ].map(([id, name]) => (
+              <option key={id} value={id}>
+                {name || "Unnamed team"}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Metadata observation
+          <select
+            value={freshness}
+            onChange={(e) => setFreshness(e.target.value)}
+          >
+            <option value="">Any observation date</option>
+            <option value="recent-7d">Observed in last 7 days</option>
+            <option value="older-7d">Not observed for 7 days</option>
+            <option value="unknown">Observation unknown</option>
+          </select>
+        </label>
+        <label>
+          Lineage
+          <select value={lineage} onChange={(e) => setLineage(e.target.value)}>
+            <option value="">Any lineage state</option>
+            <option value="recorded">Has recorded relationships</option>
+            <option value="missing">No asset relationships recorded</option>
+          </select>
+        </label>
+      </div>
+      <p className="hint">
+        Observation dates describe catalog metadata. They do not establish when
+        business data was refreshed.
+      </p>
+      <Feedback error={workspace.error} />
       <section className="panel table-panel">
         <Pager
           page={assets}
@@ -289,6 +420,7 @@ export function CatalogPage({
 }
 export function AssetPage({ id, session }: { id: string; session: Session }) {
   const [retry, setRetry] = useState(0);
+  const [section, setSection] = useState("overview");
   const key = `${id}:${retry}`;
   const [resource, setResource] = useState<{
     key: string;
@@ -348,8 +480,47 @@ export function AssetPage({ id, session }: { id: string; session: Session }) {
               </>
             }
           />
-          <section className="panel">
+          <nav className="workbench-tabs" aria-label="Dataset sections">
+            {[
+              ["overview", "Overview"],
+              ["schema", "Schema"],
+              ["lineage", "Lineage"],
+              ["transformations", "Transformations"],
+              ["definitions", "Formulas & metrics"],
+              ["consumers", "Consumers"],
+              ["activity", "Activity"],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                aria-pressed={section === key}
+                onClick={() => setSection(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+          {!["overview", "schema", "activity"].includes(section) && (
+            <section className="panel">
+              <AssetRelationships
+                id={data.asset.id}
+                section={
+                  section as
+                    | "lineage"
+                    | "transformations"
+                    | "definitions"
+                    | "consumers"
+                }
+              />
+            </section>
+          )}
+          <section className="panel" hidden={section !== "overview"}>
             <h2>Asset overview</h2>
+            <ContextNote title="Understand this dataset">
+              Start with its source and ownership below. Schema lists the
+              registered fields; Lineage shows recorded inputs and outputs;
+              Transformations explains SQL evidence; Formulas & metrics and
+              Consumers show registered usage.
+            </ContextNote>
             <dl className="details">
               <div>
                 <dt>Connection</dt>
@@ -368,7 +539,7 @@ export function AssetPage({ id, session }: { id: string; session: Session }) {
                 <dd>{data.asset.owner ?? "Not recorded"}</dd>
               </div>
               <div>
-                <dt>Last seen</dt>
+                <dt>Metadata last observed</dt>
                 <dd>
                   {data.asset.last_seen_at
                     ? new Date(data.asset.last_seen_at).toLocaleString()
@@ -376,10 +547,13 @@ export function AssetPage({ id, session }: { id: string; session: Session }) {
                 </dd>
               </div>
             </dl>
-            <p className="hint">Asset ID: {data.asset.id}</p>
+            <p className="hint">
+              Actual business-data refresh: not available from the catalog
+              observation timestamp.
+            </p>
             <SourceEvidence key={data.asset.id} id={data.asset.id} />
           </section>
-          <section className="panel">
+          <section className="panel" hidden={section !== "schema"}>
             <div className="section-title">
               <h2>Registered columns</h2>
               <span className="badge">{data.columns.length} columns</span>
@@ -403,6 +577,17 @@ export function AssetPage({ id, session }: { id: string; session: Session }) {
                       <tr key={c.id}>
                         <td>
                           <strong>{c.name}</strong>
+                          <small>
+                            <a
+                              href={`#lineage/${data.asset.id}?column=${c.id}`}
+                            >
+                              Trace field
+                            </a>{" "}
+                            ·{" "}
+                            <a href={`#impact/${data.asset.id}?column=${c.id}`}>
+                              Plan a change
+                            </a>
+                          </small>
                         </td>
                         <td>
                           <Status
@@ -432,12 +617,14 @@ export function AssetPage({ id, session }: { id: string; session: Session }) {
               </TableRegion>
             )}
           </section>
-          <AssetActivity key={data.asset.id} id={data.asset.id} />
-          <AssetActivity
-            key={`metadata:${data.asset.id}`}
-            id={data.asset.id}
-            sourceHistory
-          />
+          <div hidden={section !== "activity"}>
+            <AssetActivity key={data.asset.id} id={data.asset.id} />
+            <AssetActivity
+              key={`metadata:${data.asset.id}`}
+              id={data.asset.id}
+              sourceHistory
+            />
+          </div>
         </>
       )}
     </>
@@ -463,39 +650,56 @@ function SourceEvidence({ id }: { id: string }) {
     };
   }, [id]);
   return (
-    <details>
-      <summary>Source metadata and provenance</summary>
-      <Feedback error={error} />
-      {metadata ? (
-        <>
-          <dl className="details">
-            {(
-              [
-                "description",
-                "business_owner",
-                "technical_owner",
-                "inventory_state",
-              ] as const
-            ).map((key) => (
-              <div key={key}>
-                <dt>{humanize(key)}</dt>
-                <dd>{String(metadata[key] || "Not recorded")}</dd>
-              </div>
-            ))}
-          </dl>
-          <JsonDetails
-            value={{
-              ...metadata,
-              metadata:
-                typeof metadata.metadata === "string"
-                  ? JSON.parse(metadata.metadata)
-                  : metadata.metadata,
-            }}
-          />
-        </>
-      ) : (
-        !error && <p role="status">Loading source evidence…</p>
+    <>
+      <p className="record-description">
+        {metadata
+          ? String(
+              metadata.description ||
+                "No business description has been recorded for this asset.",
+            )
+          : "Reading source description…"}
+      </p>
+      {metadata && (
+        <p className="hint">
+          Metadata provenance:{" "}
+          {humanize(String(metadata.provenance || "Not recorded"))}. Ownership
+          is displayed as recorded; it is not inferred from repository authors.
+        </p>
       )}
-    </details>
+      <details>
+        <summary>Source metadata and provenance</summary>
+        <Feedback error={error} />
+        {metadata ? (
+          <>
+            <dl className="details">
+              {(
+                [
+                  "description",
+                  "business_owner",
+                  "technical_owner",
+                  "inventory_state",
+                ] as const
+              ).map((key) => (
+                <div key={key}>
+                  <dt>{humanize(key)}</dt>
+                  <dd>{String(metadata[key] || "Not recorded")}</dd>
+                </div>
+              ))}
+            </dl>
+            <JsonDetails
+              value={{
+                ...metadata,
+                metadata:
+                  typeof metadata.metadata === "string"
+                    ? JSON.parse(metadata.metadata)
+                    : metadata.metadata,
+              }}
+            />
+          </>
+        ) : (
+          !error && <p role="status">Loading source evidence…</p>
+        )}
+      </details>
+    </>
   );
 }

@@ -1,0 +1,91 @@
+
+> frontend@0.0.0 test
+> node --test test/*.test.mjs && vitest run
+
+✔ workspace write actions follow the selected organization's team role (0.348583ms)
+✔ the workspace can defer navigation until the editor confirms discard (0.2385ms)
+✔ CSV mapping preserves quoted and blank source headers (0.305666ms)
+✔ mapping checks catch duplicate source and canonical fields (0.06075ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.34875
+
+ RUN  v5.1.0 /Users/rishi/Documents/work/DTCC/projects/trace_infra_capstone/trace/frontend
+
+stderr | test/product-experience.test.tsx > a reviewer waiting for clarification is not offered an invalid decision transition
+An error occurred in the <GovernancePage> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+
+ ❯ test/product-experience.test.tsx (13 tests | 1 failed) 1363ms
+   × a reviewer waiting for clarification is not offered an invalid decision transition 1003ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/product-experience.test.tsx > a reviewer waiting for clarification is not offered an invalid decision transition
+TestingLibraryElementError: Unable to find role="button" and name "Revenue v2"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div />[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div />[39m
+[36m</body>[39m
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ test/product-experience.test.tsx:368:18
+    366|   render(<GovernancePage session={session} />);
+    367|   await userEvent.click(
+    368|     await screen.findByRole("button", { name: "Revenue v2", exact: tru…
+       |                  ^
+    369|   );
+    370|   expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'toLowerCase')
+ ❯ humanize src/components/format.ts:3:6
+      1| export function humanize(value: string) {
+      2|   return value
+      3|     .toLowerCase()
+       |      ^
+      4|     .replaceAll("_", " ")
+      5|     .replace(/\b(sql|dax|csv|api|json|s3|bi)\b/g, (word) => word.toUpp…
+ ❯ src/features/governance/GovernancePage.tsx:435:35
+ ❯ GovernancePage src/features/governance/GovernancePage.tsx:418:36
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:28571:20
+ ❯ renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:8030:22
+ ❯ updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10569:19
+ ❯ beginWork node_modules/react-dom/cjs/react-dom-client.development.js:12205:18
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:19176:22
+
+This error originated in "test/product-experience.test.tsx" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The last test to run before this error was "a reviewer waiting for clarification is not offered an invalid decision transition". This means either:
+- the error was thrown while Vitest was running this test, or
+- the error was thrown after the test completed, and this was the most recent test at that point.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  1 failed | 70 passed (71)
+     Errors  1 error
+   Start at  00:02:59
+   Duration  2.54s (environment 56%, tests 31%, setup 6%, import 3%, transform 3%)
+

@@ -1,0 +1,17 @@
+{
+  "workspace": "Disposable product acceptance; no NovaMart test writes",
+  "afterBackendRestart": true,
+  "independentApprovalAndHistory": true,
+  "readableOldAndNewSnapshots": true,
+  "draftAndNamedInputsPersisted": true,
+  "metricRegistrationPersisted": true,
+  "versionSpecificReportMappingPersisted": true,
+  "humanMappingProvenancePersisted": true,
+  "reportingConsumerReachableInImpact": true,
+  "confirmedCandidateRemovedFromSuggestions": true,
+  "draftValidation": {
+    "null": false,
+    "type": "jsonb",
+    "value": "{\"inputs\": [\"ACCEPTANCE.RAW.ORDERS\"], \"status\": \"PARSED\", \"columns\": [\"NET_AMOUNT\"], \"outputs\": [], \"warnings\": [\"No output target declared; select a registered target explicitly\", \"Candidates only. Column ambiguity and registry identities require explicit confirmation; SQL was not executed.\"]}"
+  }
+}

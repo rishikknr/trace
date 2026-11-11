@@ -962,7 +962,7 @@ class TenantIsolationIntegrationTests {
                   "--spring.profiles.active=local-dev",
                   "--trace.processor.url=http://127.0.0.1:" + parserPort)) {
         assertEquals(
-            "17",
+            "18",
             admin.queryForObject(
                 "SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank"
                     + " DESC LIMIT 1",

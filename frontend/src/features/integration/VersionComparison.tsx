@@ -1,3 +1,6 @@
+import { ColumnReferenceNames } from "./ReferenceNames";
+import { SubmitReview } from "../governance/GovernancePage";
+import type { Asset } from "../../types/api";
 import { Status, Timestamp } from "../../components/Design";
 import { useMemo, useState, useEffect, useRef } from "react";
 import type { FormulaVersion } from "./FormulaStudio";
@@ -52,7 +55,9 @@ export function VersionComparison({
   onEdit,
   writable,
   onUse,
+  assets = [],
 }: {
+  assets?: Asset[];
   formula: string;
   revision: number;
   writable: boolean;
@@ -122,6 +127,13 @@ export function VersionComparison({
             <Timestamp value={v.created_at} />
           </summary>
           <pre className="formula-editor">{v.expression}</pre>
+          {writable && v.state === "REGISTERED" && (
+            <SubmitReview
+              targetType="FORMULA_VERSION"
+              targetId={v.id}
+              name={`Formula version ${v.version}`}
+            />
+          )}
           {writable && (
             <button type="button" onClick={() => onUse(v)}>
               Use as next version
@@ -192,6 +204,44 @@ export function VersionComparison({
           <h4>
             Version {left.version} ↔ Version {right.version}
           </h4>
+          <div className="context-note">
+            <strong>Dependency changes</strong>
+            {(() => {
+              const before = JSON.parse(
+                left.referenced_assets || "[]",
+              ) as string[];
+              const after = JSON.parse(
+                right.referenced_assets || "[]",
+              ) as string[];
+              const added = after.filter((id) => !before.includes(id)),
+                removed = before.filter((id) => !after.includes(id));
+              return (
+                <>
+                  <p>
+                    {added.length} added dataset inputs · {removed.length}{" "}
+                    removed dataset inputs.
+                  </p>
+                  {added.map((id) => (
+                    <p key={id}>
+                      Added:{" "}
+                      {assets.find((a) => a.id === id)?.external_key ||
+                        "Unavailable input"}
+                    </p>
+                  ))}
+                  {removed.map((id) => (
+                    <p key={id}>
+                      Removed:{" "}
+                      {assets.find((a) => a.id === id)?.external_key ||
+                        "Unavailable input"}
+                    </p>
+                  ))}
+                  <a href={`#impact/${right.id}`}>
+                    Inspect recorded consumers of the right-hand version →
+                  </a>
+                </>
+              );
+            })()}
+          </div>
           <div className="version-comparison">
             {[left, right].map((version, index) => (
               <div key={index}>
@@ -223,20 +273,22 @@ export function VersionComparison({
                             JSON.parse(
                               version.referenced_assets ?? "[]",
                             ) as string[]
-                          ).join(", ") || "None declared"}
+                          )
+                            .map(
+                              (id) =>
+                                assets.find((a) => a.id === id)?.external_key ||
+                                "Unavailable dataset reference",
+                            )
+                            .join(", ") || "None declared"}
                         </code>
                       </dd>
                     </div>
                     <div>
                       <dt>Columns</dt>
                       <dd>
-                        <code>
-                          {(
-                            JSON.parse(
-                              version.referenced_columns ?? "[]",
-                            ) as string[]
-                          ).join(", ") || "None declared"}
-                        </code>
+                        <ColumnReferenceNames
+                          ids={JSON.parse(version.referenced_columns || "[]")}
+                        />
                       </dd>
                     </div>
                   </dl>

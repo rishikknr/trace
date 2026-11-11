@@ -22,8 +22,32 @@ public class BrowseService {
   }
 
   public PageResponse<Map<String, Object>> page(
-      String kind, int limit, int offset, String q, UUID parent, String type, String status,
-      String sort, UUID source) {
+      String kind,
+      int limit,
+      int offset,
+      String q,
+      UUID parent,
+      String type,
+      String status,
+      String sort,
+      UUID source) {
+    return page(kind, limit, offset, q, parent, type, status, sort, source, Map.of());
+  }
+
+  public PageResponse<Map<String, Object>> page(
+      String kind,
+      int limit,
+      int offset,
+      String q,
+      UUID parent,
+      String type,
+      String status,
+      String sort,
+      UUID source,
+      Map<String, String> filters) {
+    for (String field : List.of("database", "schema", "owner", "freshness", "lineage"))
+      if (filters.getOrDefault(field, "").length() > 255)
+        ConnectionService.invalid("Catalog filter too long");
     if (limit < 1
         || limit > 100
         || offset < 0
@@ -31,10 +55,14 @@ public class BrowseService {
         || q.length() > 255
         || type.length() > 40
         || status.length() > 40
-        || (!sort.isEmpty() && (!"assets".equals(kind) || !Set.of("name-desc", "last-seen").contains(sort)))
+        || (!sort.isEmpty()
+            && (!"assets".equals(kind) || !Set.of("name-desc", "last-seen").contains(sort)))
         || (source != null && !"assets".equals(kind)))
       throw new org.springframework.web.server.ResponseStatusException(
           org.springframework.http.HttpStatus.BAD_REQUEST, "Invalid pagination or filter");
-    return tenants.execute(t -> repository.page(t, kind, limit, offset, q, parent, type, status, sort, source));
+    return tenants.execute(
+        t ->
+            repository.page(
+                t, kind, limit, offset, q, parent, type, status, sort, source, filters));
   }
 }

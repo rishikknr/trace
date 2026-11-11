@@ -16,9 +16,9 @@ const session = {
 it.each([undefined, 2])(
   "explains an incompatible backend (%s) without requesting missing browse endpoints",
   async (integrationVersion) => {
-    const fetch = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ integrationVersion })),
-    );
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify({ integrationVersion })));
     vi.stubGlobal("fetch", fetch);
     render(<OverviewPage session={session} canImport />);
 
@@ -31,19 +31,24 @@ it.each([undefined, 2])(
 );
 
 it("loads registry totals after confirming a compatible backend", async () => {
-  const fetch = vi.fn(async (url: string) =>
-    new Response(JSON.stringify(
-      url === "/api/registry/status"
-        ? { integrationVersion: 3 }
-        : { items: [], total: 42, limit: 5, offset: 0, hasMore: false },
-    )),
+  const fetch = vi.fn(
+    async (url: string) =>
+      new Response(
+        JSON.stringify(
+          url === "/api/registry/status"
+            ? { integrationVersion: 3 }
+            : { items: [], total: 42, limit: 5, offset: 0, hasMore: false },
+        ),
+      ),
   );
   vi.stubGlobal("fetch", fetch);
   render(<OverviewPage session={session} canImport />);
 
   await waitFor(() =>
-    expect(screen.getByRole("link", { name: /Catalog assets/ }).textContent).toContain("42"),
+    expect(
+      screen.getByRole("link", { name: /Catalog assets/ }).textContent,
+    ).toContain("42"),
   );
   expect(screen.queryByRole("alert")).toBeNull();
-  expect(fetch).toHaveBeenCalledTimes(7);
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(8));
 });

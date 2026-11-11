@@ -1,3 +1,4 @@
+import { SuggestedMappings } from "./SuggestedMappings";
 import { useEffect, useRef, useState } from "react";
 import type { Connection, ImportBatch, Session, Team } from "../../types/api";
 import { allowed } from "../../app/permissions";
@@ -944,6 +945,7 @@ export function ConnectionWizard({
                       <p>Preview expired. Run discovery again.</p>
                     )}
                   </div>
+                  {batch.status === "COMMITTED" && <SuggestedMappings session={session} source={connection.id}/>}
                 </>
               )}
             </>

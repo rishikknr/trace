@@ -1,0 +1,7 @@
+{
+  "allRegistryFingerprintsPreserved": true,
+  "releaseSha256": "c82020f85bbda62bf4e9a3c08229ed680ab0372de34478d2ba8c64d6b5e35a2a",
+  "backendReadiness": "UP",
+  "databaseChanges": "none; V18 retained",
+  "credentials": "retained without rotation"
+}

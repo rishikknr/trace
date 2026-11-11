@@ -12,7 +12,7 @@ ln -s "$trace_root/demo" "$trace_build/demo"
 trace_jar="$trace_build/backend/target/backend-0.0.1-SNAPSHOT.jar"
 trace_sha=$(shasum -a 256 "$trace_jar" | cut -d' ' -f1)
 mkdir -p "$trace_root/backend/releases"
-trace_release="$trace_root/backend/releases/trace-v17-$trace_sha.jar"
+trace_release="$trace_root/backend/releases/trace-v18-$trace_sha.jar"
 if [[ ! -f "$trace_release" ]]; then
   cp -n "$trace_jar" "$trace_release"
   chmod 444 "$trace_release"

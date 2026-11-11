@@ -47,6 +47,13 @@ public class RuntimeDatabaseGuard implements InitializingBean {
             Boolean.class)))
       throw new IllegalStateException(
           "TRACE lineage upgrade required: apply additive migration V17 before startup");
+    if (!Boolean.TRUE.equals(
+        jdbc.queryForObject(
+            "SELECT to_regclass('public.governance_reviews') IS NOT NULL AND"
+                + " to_regclass('public.governance_events') IS NOT NULL",
+            Boolean.class)))
+      throw new IllegalStateException(
+          "TRACE governance upgrade required: apply additive migration V18 before startup");
     Boolean unsafe =
         jdbc.queryForObject(
 """
@@ -72,7 +79,7 @@ SELECT r.rolsuper OR r.rolbypassrls OR r.rolcreaterole OR r.rolcreatedb OR r.rol
             'teams', 'team_memberships', 'source_connections', 'assets', 'asset_columns',
             'lineage_edges', 'column_lineage', 'import_batches', 'organization_invitations', 'audit_events',
             'connection_secret_storage','connection_sync_runs','import_mapping_profiles','formulas','formula_versions',
-            'formula_dependencies','formula_column_dependencies','metrics','metric_versions','report_mappings','tags','asset_tags','asset_curation_history','connection_sync_attempts','metadata_change_history','lineage_evidence')
+            'formula_dependencies','formula_column_dependencies','metrics','metric_versions','report_mappings','tags','asset_tags','asset_curation_history','connection_sync_attempts','metadata_change_history','lineage_evidence','governance_reviews','governance_events')
         AND (NOT c.relrowsecurity OR NOT c.relforcerowsecurity))
 FROM pg_roles r WHERE r.rolname = current_user
 """,

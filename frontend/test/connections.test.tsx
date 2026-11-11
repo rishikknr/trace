@@ -320,7 +320,7 @@ describe("guided connections", () => {
         : run,
     );
     vi.mocked(request).mockImplementation(async (path) =>
-      path.startsWith("/imports/") ? batch : initial,
+      path.startsWith("/imports/") ? batch : path.startsWith("/mapping-suggestions") ? {items:[],hasMore:false,basis:"Exact name"} : initial,
     );
     vi.mocked(api.commit).mockResolvedValue({
       ...batch,

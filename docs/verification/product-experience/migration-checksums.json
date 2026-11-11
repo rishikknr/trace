@@ -1,0 +1,93 @@
+{
+  "existingMigrationsUnchanged": true,
+  "existing": [
+    {
+      "file": "backend/src/main/resources/db/migration/V10__curation_drafts_and_pagination.sql",
+      "sha256": "262f3bb1da044f8506bf5dfe322a882fe7feb2fbaa676a4d8898e5c40cccfa34",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V11__legacy_discovery_recovery.sql",
+      "sha256": "74a42110f84d439ded1c4482b6fe25c0332d0cf5c6cc4c6f1fca121b020dc905",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V12__registered_dependency_integrity.sql",
+      "sha256": "2f3ce7cf4fef9cd7bc7395addbe3fb941eaf11637e173c5442a4e0ff68a77ad0",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V13__reconciliation_history.sql",
+      "sha256": "84ea49dc0bd31c7f882b85ee93669d43f131e6f470a42cccebb5dd0e0070cac7",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V14__preserve_manual_column_curation.sql",
+      "sha256": "8ceeea2ac1ab3750aac81b015dd9ffcff612fec225d4a6a2094761d3de74264c",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V15__serialize_owner_transitions.sql",
+      "sha256": "e06933266ace4630553c4630c48f6a9fba19ee42f40439c256f0ca00cf9cc162",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V16__connection_test_evidence.sql",
+      "sha256": "64b2fe6736c00cffc2a35084550fb309a8e751b3436fd83c128efd935f29f1b4",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V17__lineage_evidence.sql",
+      "sha256": "5b6af982823ee0d75e779879126d21c58e0987f717bf10f9eced7a20266c9bb1",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V1__create_core_registry.sql",
+      "sha256": "f5698817d09db6ba1e9ef146d496f8f3588330ab6e0752584b1d32d9e7084676",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V2__organization_foundation.sql",
+      "sha256": "904e260b30afc4fd6a2e7e83a049cc423d8de7238e900c39b2c6498368e456c1",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V3__tenant_row_security.sql",
+      "sha256": "5cede3e814eba7c566c417f812e7dc194912227e83097aeedd66caef32e645f3",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V4__metadata_import_results.sql",
+      "sha256": "d17bc6d0c04a7e9f9246ad95bf5702ac62fa35c4336e8172250f362d3632a606",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V5__authentication_and_authorization.sql",
+      "sha256": "7f8f4d911203750be558f9bf36188e630dec264f0651b11c81c4f6a52cb9af0a",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V6__local_account_registration.sql",
+      "sha256": "15f9e45959842a22fbbd8606238bdd3c061c9f91794f7b8416c4a48424c4be6a",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V7__metadata_integration.sql",
+      "sha256": "60e565c81caa0e5efd4c2a8d57a429d8bf5c7e77d8691fdb08e13db89150af71",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V8__formula_column_dependencies.sql",
+      "sha256": "6970ec2dad98928419aec28ac8a8ce79bcd79e34a7ac1275aa3be66ac61ea916",
+      "matchesHEAD": true
+    },
+    {
+      "file": "backend/src/main/resources/db/migration/V9__durable_discovery_queue.sql",
+      "sha256": "f5333b5d94555c6cf0c25fb210bd4d35089d847e29caa827306a22cff9258616",
+      "matchesHEAD": true
+    }
+  ],
+  "new": [
+    "backend/src/main/resources/db/migration/V18__governance_reviews.sql"
+  ]
+}

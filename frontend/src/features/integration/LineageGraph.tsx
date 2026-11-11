@@ -263,7 +263,7 @@ function GraphCanvas({
     markerEnd: { type: MarkerType.ArrowClosed, color: "#60847b" },
     selected: e.id === edge?.id,
     style: {
-      stroke: e.id === edge?.id ? "#6b4bc5" : "#75968d",
+      stroke: e.id === edge?.id ? "#2563eb" : "#8da9ca",
       strokeWidth: e.id === edge?.id ? 2.4 : 1.3,
       strokeDasharray:
         e.provenance === "MANUAL_DECLARATION" ? "5 4" : undefined,
@@ -403,7 +403,7 @@ function GraphCanvas({
             <MiniMap
               pannable
               zoomable
-              nodeColor={(n) => (n.id === root ? "#3a8e7c" : "#b5c8bf")}
+              nodeColor={(n) => (n.id === root ? "#2563eb" : "#c5d9f0")}
             />
           </ReactFlow>
           <div className="graph-legend">

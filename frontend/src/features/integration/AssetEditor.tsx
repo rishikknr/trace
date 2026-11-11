@@ -1,3 +1,4 @@
+import { OwnerField } from "../../components/OwnerField";
 import { loadOptions } from "./paging";
 import { AssetActivity } from "../catalog/AssetActivity";
 import { useEffect, useState } from "react";
@@ -205,22 +206,18 @@ export function AssetEditor({
                 defaultValue={existing?.description}
               />
             </label>
-            <label>
-              Technical owner
-              <input
-                name="owner"
-                maxLength={150}
-                defaultValue={existing?.owner ?? ""}
-              />
-            </label>
-            <label>
-              Business owner
-              <input
-                name="businessOwner"
-                maxLength={150}
-                defaultValue={existing?.business_owner ?? ""}
-              />
-            </label>
+            <OwnerField
+              session={session}
+              name="owner"
+              label="Technical owner"
+              defaultValue={existing?.owner ?? ""}
+            />
+            <OwnerField
+              session={session}
+              name="businessOwner"
+              label="Business owner"
+              defaultValue={existing?.business_owner ?? ""}
+            />
             <AssetTags session={session} selected={existing?.tag_ids ?? "[]"} />
             {!id && (
               <>

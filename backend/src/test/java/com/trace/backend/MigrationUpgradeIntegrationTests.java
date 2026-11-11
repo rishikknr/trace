@@ -317,13 +317,13 @@ class MigrationUpgradeIntegrationTests {
                   "SELECT status FROM connection_sync_runs WHERE id=?", String.class, run));
       }
       assertEquals(
-          17,
+          18,
           admin.queryForObject(
               "SELECT max(version::int) FROM flyway_schema_history WHERE success", Integer.class));
       System.out.println(
           "UPGRADE V"
               + baseline
-              + " -> V17: baseline fingerprints preserved; legacy recovery verified");
+              + " -> V18: baseline fingerprints preserved; legacy recovery verified");
     } finally {
       // Only the database this case successfully created is removed.
       control.execute("DROP DATABASE " + database + " WITH (FORCE)");

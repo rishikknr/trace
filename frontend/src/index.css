@@ -6,19 +6,19 @@
     "Segoe UI",
     sans-serif;
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  --canvas: #f6f7f4;
+  --canvas: #f8fbff;
   --surface: #fff;
-  --inset: #f1f4f1;
-  --ink: #182824;
-  --muted: #53665f;
-  --line: #dbe3de;
-  --control: #7e9188;
-  --accent: #126554;
-  --accent-hover: #0a5143;
-  --accent-soft: #e6f1eb;
-  --sidebar: #152c2a;
-  --sidebar-ink: #f3f8f5;
-  --sidebar-muted: #a9c1b7;
+  --inset: #f1f7fd;
+  --ink: #172b4d;
+  --muted: #62748a;
+  --line: #e1eaf3;
+  --control: #b6c8dc;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: #eaf4ff;
+  --sidebar: #f3f8fe;
+  --sidebar-ink: #172b4d;
+  --sidebar-muted: #6b809a;
   --success: #216746;
   --warning: #785414;
   --danger: #a13735;
@@ -208,7 +208,7 @@ time,
   white-space: nowrap;
 }
 :focus-visible {
-  outline: 2px solid #16876d;
+  outline: 2px solid #2563eb;
   outline-offset: 3px;
 }
 fieldset {
@@ -249,7 +249,7 @@ tbody tr:last-child td {
   border-bottom: 0;
 }
 tbody tr:hover {
-  background: #f7faf7;
+  background: #f5f9ff;
 }
 table a {
   font-weight: 650;

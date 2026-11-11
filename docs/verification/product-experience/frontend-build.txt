@@ -1,0 +1,48 @@
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.7 building client environment for production...
+transforming...
+[33m[MISSING_NAME_OPTION_FOR_IIFE_EXPORT] [0mIf you do not supply "output.name", you may not be able to access the exports of an IIFE bundle.
+
+✓ 106 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                     0.47 kB │ gzip:   0.30 kB
+dist/assets/elk-worker.min-DfzQf8Rn.js          1,456.23 kB
+dist/assets/ConnectionsPage-IcyXWRHl.css           11.44 kB │ gzip:   2.83 kB
+dist/assets/lineage-x4YHCKOB.css                   14.05 kB │ gzip:   3.31 kB
+dist/assets/LineageGraph-DLioOiRN.css              15.41 kB │ gzip:   2.56 kB
+dist/assets/index-BnQuazTZ.css                     30.52 kB │ gzip:   7.20 kB
+dist/assets/permissions-xLF3D157.js                 0.16 kB │ gzip:   0.14 kB
+dist/assets/compatibility-DljZh1qf.js               0.32 kB │ gzip:   0.26 kB
+dist/assets/hooks-R7D7OExW.js                       0.97 kB │ gzip:   0.53 kB
+dist/assets/OwnerField-CdvqaYTo.js                  0.99 kB │ gzip:   0.63 kB
+dist/assets/AssetActivity-DymBH3ti.js               1.06 kB │ gzip:   0.59 kB
+dist/assets/paging-C7vpKV86.js                      1.35 kB │ gzip:   0.77 kB
+dist/assets/pagination-CunAU3Ou.js                  1.40 kB │ gzip:   0.67 kB
+dist/assets/Workflow-EPVVmcbm.js                    1.60 kB │ gzip:   0.76 kB
+dist/assets/AccountHelpPages-BxWLBhnV.js            1.62 kB │ gzip:   0.87 kB
+dist/assets/shared-CxQGjUnZ.js                      1.97 kB │ gzip:   0.92 kB
+dist/assets/DefinitionDependencies-Bv1yVpSP.js      3.64 kB │ gzip:   1.36 kB
+dist/assets/SignUpPage-BD3ofEr9.js                  3.75 kB │ gzip:   1.45 kB
+dist/assets/DataFlowOverview-Dq6ndTkU.js            4.48 kB │ gzip:   1.69 kB
+dist/assets/AssetRelationships-x4XJRlKm.js          5.00 kB │ gzip:   1.91 kB
+dist/assets/MetadataInventory-CnjGTMpb.js           5.67 kB │ gzip:   2.28 kB
+dist/assets/OverviewPage-Ce6awJ-c.js                8.80 kB │ gzip:   2.69 kB
+dist/assets/AssetEditor-CVkm7F2g.js                10.00 kB │ gzip:   3.17 kB
+dist/assets/GovernancePage-BKCEDMgE.js             10.14 kB │ gzip:   3.53 kB
+dist/assets/ImportCenter-lvhCt6oP.js               11.06 kB │ gzip:   4.19 kB
+dist/assets/TransformationPage-B1QR8mqE.js         13.84 kB │ gzip:   4.46 kB
+dist/assets/CatalogPage-Dt-ZDTAe.js                13.91 kB │ gzip:   4.13 kB
+dist/assets/ManagementPages-DYWc4IVp.js            15.73 kB │ gzip:   4.15 kB
+dist/assets/LineagePage-MbWHstWo.js                20.19 kB │ gzip:   6.37 kB
+dist/assets/MetricsPage-jnwxS5Ht.js                20.73 kB │ gzip:   5.84 kB
+dist/assets/FormulaStudio-MuCYYP_W.js              23.69 kB │ gzip:   6.97 kB
+dist/assets/ConnectionsPage-Cm13MLIa.js            49.45 kB │ gzip:  14.97 kB
+dist/assets/LineageGraph-BDiMZCJo.js              201.15 kB │ gzip:  65.41 kB
+dist/assets/index-FS1-yeP8.js                     257.35 kB │ gzip:  80.52 kB
+dist/assets/CodeEditor-DP9TSf37.js                446.47 kB │ gzip: 146.26 kB
+
+✓ built in 342ms

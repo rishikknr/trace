@@ -9,39 +9,45 @@ const groups: [string, Destination[]][] = [
     "Workspace",
     [
       ["overview", "Overview", "overview"],
+      ["connections", "Sources", "connections"],
       ["catalog", "Catalog", "catalog"],
-      ["data-flow", "Data Flow", "overview"],
-      ["lineage", "Lineage", "lineage"],
-      ["impact", "Impact Analysis", "lineage"],
+      ["lineage", "Data Flow", "lineage"],
     ],
   ],
   [
-    "Data sources",
+    "Define & measure",
     [
-      ["connections", "Connections", "connections"],
+      ["transformations", "Transformations", "code"],
+      ["formulas", "Formula Studio", "formula"],
+      ["metrics", "Metrics", "metrics"],
+      ["report-mappings", "Reporting", "mapping"],
+    ],
+  ],
+  [
+    "Change & review",
+    [
+      ["impact", "Impact Analysis", "lineage"],
+      ["governance", "Governance", "shield"],
+    ],
+  ],
+  [
+    "Source tools",
+    [
+      ["data-flow", "Source overview", "database"],
       ["import", "Import Center", "upload"],
       ["discovery", "Discovery History", "history"],
     ],
   ],
   [
-    "Definitions",
-    [
-      ["transformations", "Transformations", "code"],
-      ["formulas", "Formula Studio", "formula"],
-      ["metrics", "Metrics", "metrics"],
-      ["report-mappings", "Report Mappings", "mapping"],
-    ],
-  ],
-  [
-    "Management",
+    "Workspace settings",
     [
       ["teams", "Teams", "teams"],
       ["members", "Members", "user"],
       ["organization", "Organization Settings", "settings"],
       ["audit", "Audit History", "history"],
+      ["platform", "Platform Management", "shield"],
     ],
   ],
-  ["Administration", [["platform", "Platform Management", "shield"]]],
 ];
 
 function routeSection(route: string) {
@@ -113,7 +119,8 @@ export function WorkspaceShell({
   useEffect(() => {
     if (previousRoute.current === route) return;
     previousRoute.current = route;
-    main.current?.focus();
+    main.current?.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [route]);
 
   useEffect(() => {
@@ -150,25 +157,43 @@ export function WorkspaceShell({
 
   const navigation = (close?: () => void) => (
     <nav className="workspace-nav" aria-label="Workspace navigation">
-      {visibleGroups.map(({ label, links }) => (
-        <div key={label}>
-          <p className="nav-label">{label}</p>
-          {links.map(([id, name, icon]) => (
-            <a
-              key={id}
-              className="nav-link"
-              href={`#${id}`}
-              title={name}
-              aria-label={name}
-              aria-current={id === current ? "page" : undefined}
-              onClick={close}
-            >
-              <Icon name={icon} size={16} />
-              <span>{name}</span>
-            </a>
-          ))}
-        </div>
-      ))}
+      {visibleGroups.map(({ label, links }) => {
+        const entries = links.map(([id, name, icon]) => (
+          <a
+            key={id}
+            className="nav-link"
+            href={`#${id}`}
+            title={name}
+            aria-label={name}
+            aria-current={id === current ? "page" : undefined}
+            onClick={close}
+          >
+            <Icon name={icon} size={16} />
+            <span>{name}</span>
+          </a>
+        ));
+        return ["Source tools", "Workspace settings"].includes(label) ? (
+          <details
+            className="nav-disclosure"
+            key={label}
+            open={links.some(([id]) => id === current) || undefined}
+          >
+            <summary>
+              <Icon
+                name={label === "Source tools" ? "connections" : "settings"}
+                size={16}
+              />
+              <span>{label}</span>
+            </summary>
+            {entries}
+          </details>
+        ) : (
+          <div key={label}>
+            <p className="nav-label">{label}</p>
+            {entries}
+          </div>
+        );
+      })}
     </nav>
   );
 
@@ -366,14 +391,14 @@ export function AuthShell({ children }: { children: ReactNode }) {
                 height="16"
                 patternUnits="userSpaceOnUse"
               >
-                <circle cx="1" cy="1" r=".8" fill="#47685d" />
+                <circle cx="1" cy="1" r=".8" fill="#bfd5ee" />
               </pattern>
             </defs>
             <rect width="360" height="166" fill="url(#auth-grid)" />
-            <g fill="none" stroke="#86ad9a" strokeWidth="1.3">
+            <g fill="none" stroke="#86aadb" strokeWidth="1.3">
               <path d="M91 49h26a13 13 0 0 1 13 13v6a13 13 0 0 0 13 13h8 M91 115h26a13 13 0 0 0 13-13v-8a13 13 0 0 1 13-13h8 M233 81h18a13 13 0 0 0 13-13v-4a13 13 0 0 1 13-13h8 M233 81h18a13 13 0 0 1 13 13v4a13 13 0 0 0 13 13h8" />
             </g>
-            <g stroke="#6d9584" fill="#203d36">
+            <g stroke="#99bde8" fill="#eaf4ff">
               <rect x="9" y="34" width="82" height="30" rx="4" />
               <rect x="9" y="100" width="82" height="30" rx="4" />
               <rect
@@ -382,13 +407,13 @@ export function AuthShell({ children }: { children: ReactNode }) {
                 width="82"
                 height="32"
                 rx="4"
-                fill="#345b4b"
+                fill="#dbeaff"
               />
               <rect x="285" y="36" width="67" height="30" rx="4" />
               <rect x="285" y="96" width="67" height="30" rx="4" />
             </g>
             <g
-              fill="#d5e9dc"
+              fill="#23456f"
               fontSize="10"
               fontFamily="monospace"
               textAnchor="middle"

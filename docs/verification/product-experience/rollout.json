@@ -1,0 +1,11 @@
+{
+  "migration": "V18",
+  "releaseSha256": "45cd3923a3ca89efaebd7a7eae9dc1519d2b31fb99c1932e53d91fd8e9cbfa8c",
+  "backup": ".trace-local/backups/product-v18-20261111T180048Z",
+  "originalTableFingerprintsPreserved": true,
+  "databaseRolesPreserved": true,
+  "encryptionKeyFilePreserved": true,
+  "backendHealth": "UP",
+  "processorHealth": "ok",
+  "sessionsRequireSignIn": true
+}
