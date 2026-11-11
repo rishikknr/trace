@@ -1,0 +1,58 @@
+{
+  "connectionId": "8c72af23-42a1-4d0e-9228-a62843625c1c",
+  "status": "CONNECTED",
+  "reasonCode": "CONNECTED",
+  "configuration": {
+    "role": "TRACE_METADATA_ROLE",
+    "account": "YJUJFLN-CW27089",
+    "schemas": [
+      "RAW",
+      "STAGING",
+      "CURATED",
+      "ANALYTICS"
+    ],
+    "database": "NOVAMART_DB",
+    "username": "TRACE_METADATA_READER",
+    "warehouse": "SNOWFLAKE_LEARNING_WH"
+  },
+  "lastSuccessfulTest": "2026-11-11T12:43:25.362019+00:00",
+  "lastSuccessfulDiscovery": "2026-11-11T12:43:55.799244+00:00",
+  "testDiagnosticId": "d9dd7c3b-c90b-49cb-9643-b89c2964a129",
+  "hasEncryptedCredentials": true,
+  "registeredAssets": 53,
+  "distinctExternalKeys": 53,
+  "bySchema": {
+    "ANALYTICS": 6,
+    "CURATED": 3,
+    "STAGING": 22,
+    "RAW": 22
+  },
+  "registeredColumns": 435,
+  "sourceLineageEdges": 0,
+  "runs": [
+    {
+      "runId": "9bf54b24-68cb-4cf7-8d6c-81a7e2ca7940",
+      "status": "COMPLETED",
+      "discovered": 53,
+      "startedAt": "2026-11-11T12:43:52.449717+00:00",
+      "finishedAt": "2026-11-11T12:43:55.799244+00:00",
+      "warnings": [],
+      "errorCode": null,
+      "previewId": "7df58ad3-5148-4441-b0eb-7b1d5bef3739",
+      "previewStatus": "COMMITTED"
+    }
+  ],
+  "verifiedAt": "2026-11-11T18:15:09.514443+05:30",
+  "method": "Actual authenticated TRACE test, live Snowflake discovery, metadata preview and explicit catalog commitment",
+  "privateKeyFile": "/Users/rishi/trace_snowflake_private.pem",
+  "passphrase": "Retained securely in encrypted connector credentials; value omitted",
+  "snowflakeAccessChanges": "None; the user chose an already-visible warehouse",
+  "tests": {
+    "backend": 105,
+    "processor": 129,
+    "frontendNode": 4,
+    "frontendVitest": 50,
+    "frontendBuild": "passed",
+    "frontendLint": "passed"
+  }
+}

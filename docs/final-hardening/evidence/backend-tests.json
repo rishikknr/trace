@@ -1,0 +1,549 @@
+{
+  "tests": 96,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "suites": [
+    {
+      "class": "com.trace.backend.CredentialCipherTests",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.003,
+      "cases": [
+        {
+          "name": "authenticatedRoundTripAndFreshNonces",
+          "seconds": 0.001,
+          "passed": true
+        },
+        {
+          "name": "authenticationRejectsCiphertextTampering",
+          "seconds": 0.0,
+          "passed": true
+        },
+        {
+          "name": "identityBindingRejectsOtherOrganizationsAndConnections",
+          "seconds": 0.001,
+          "passed": true
+        },
+        {
+          "name": "absentKeyFailsClosed",
+          "seconds": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "class": "com.trace.backend.IntegrationProcessorBoundaryTests",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.077,
+      "cases": [
+        {
+          "name": "aCompleteSnapshotWithoutAScopeIsRejected",
+          "seconds": 0.001,
+          "passed": true
+        },
+        {
+          "name": "oversizedStreamingPayloadIsCancelledBeforeParsingAndNeverRelayed",
+          "seconds": 0.076,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "class": "com.trace.backend.MigrationUpgradeIntegrationTests",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.722,
+      "cases": [
+        {
+          "name": "reproducesPreV15OwnerDeactivationRaceOnDisposableHistoricalSchema",
+          "seconds": 0.819,
+          "passed": true
+        },
+        {
+          "name": "historicalUpgradePreservesRowsAndRecoversOnlyUnleasedJobs(int)[1]",
+          "seconds": 0.657,
+          "passed": true
+        },
+        {
+          "name": "historicalUpgradePreservesRowsAndRecoversOnlyUnleasedJobs(int)[2]",
+          "seconds": 0.759,
+          "passed": true
+        },
+        {
+          "name": "historicalUpgradePreservesRowsAndRecoversOnlyUnleasedJobs(int)[3]",
+          "seconds": 0.726,
+          "passed": true
+        },
+        {
+          "name": "historicalUpgradePreservesRowsAndRecoversOnlyUnleasedJobs(int)[4]",
+          "seconds": 0.742,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "class": "com.trace.backend.ProcessorClientTests",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.029,
+      "cases": [
+        {
+          "name": "upstreamErrorsDoNotDisclosePayloads",
+          "seconds": 0.004,
+          "passed": true
+        },
+        {
+          "name": "invalidJsonAndEmptyOrDuplicateMetadataAre502",
+          "seconds": 0.019,
+          "passed": true
+        },
+        {
+          "name": "validationErrorsAreSafeAndRowSpecific",
+          "seconds": 0.004,
+          "passed": true
+        },
+        {
+          "name": "unavailableProcessorIs503",
+          "seconds": 0.001,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "class": "com.trace.backend.TenantConfigurationTests",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.013,
+      "cases": [
+        {
+          "name": "signupRejectsRemoteCrossSiteAndForwardedTraffic",
+          "seconds": 0.006,
+          "passed": true
+        },
+        {
+          "name": "passwordLimitsAccountForBcryptUtf8Limit",
+          "seconds": 0.002,
+          "passed": true
+        },
+        {
+          "name": "rateLimiterIsBoundedAndEnforcesLimit",
+          "seconds": 0.0,
+          "passed": true
+        },
+        {
+          "name": "sessionSelectionUsesAuthenticatedPrincipalAndRequiresOrganization",
+          "seconds": 0.002,
+          "passed": true
+        },
+        {
+          "name": "localDeliveryCannotBeEnabledInProductionOrOnAnExternalListener",
+          "seconds": 0.001,
+          "passed": true
+        },
+        {
+          "name": "defaultFailsClosed",
+          "seconds": 0.0,
+          "passed": true
+        },
+        {
+          "name": "identityRequiresOrganizationAndUser",
+          "seconds": 0.001,
+          "passed": true
+        },
+        {
+          "name": "forgedHeadersAndOldDevelopmentPropertiesDoNotSelectIdentity",
+          "seconds": 0.0,
+          "passed": true
+        },
+        {
+          "name": "signupRequiresAnExclusiveLoopbackDevelopmentProfile",
+          "seconds": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "class": "com.trace.backend.TenantIsolationIntegrationTests",
+      "tests": 72,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 40.243,
+      "cases": [
+        {
+          "name": "bootStartsWithRestrictedRuntimeAndProtectedEndpointsFailClosed",
+          "seconds": 1.023,
+          "passed": true
+        },
+        {
+          "name": "verifiedMembershipRejectsInvalidInactiveAndSuspendedSelections",
+          "seconds": 0.111,
+          "passed": true
+        },
+        {
+          "name": "registrationIsDisabledByDefaultAndCannotTrustForwardedRequests",
+          "seconds": 0.598,
+          "passed": true
+        },
+        {
+          "name": "completionQueueClaimsAreExclusiveAndFenced",
+          "seconds": 0.51,
+          "passed": true
+        },
+        {
+          "name": "missingContextFailsClosedAndPoolReuseClearsCommitAndRollbackContext",
+          "seconds": 0.104,
+          "passed": true
+        },
+        {
+          "name": "criticalMembershipMutationRollsBackIfAuditPersistenceFails",
+          "seconds": 0.46,
+          "passed": true
+        },
+        {
+          "name": "registrationCreatesOnlyANormalHashedIdentityAndCanSignIn",
+          "seconds": 0.528,
+          "passed": true
+        },
+        {
+          "name": "platformProvisioningDoesNotGrantImplicitTenantDataAccessAndBootstrapIsOneTime",
+          "seconds": 0.577,
+          "passed": true
+        },
+        {
+          "name": "completionAllProvidersKeepIdentityAndCancellationIsIsolated",
+          "seconds": 2.317,
+          "passed": true
+        },
+        {
+          "name": "registrationAbuseLimitsAreEnforced",
+          "seconds": 0.339,
+          "passed": true
+        },
+        {
+          "name": "step10TeamViewerCannotMutateNewResources",
+          "seconds": 0.455,
+          "passed": true
+        },
+        {
+          "name": "recoveryExpiryAndInvitationAcceptanceLimitsFailClosed",
+          "seconds": 0.606,
+          "passed": true
+        },
+        {
+          "name": "ownershipTransferAndGlobalAccountStatusChangesAreAudited",
+          "seconds": 0.57,
+          "passed": true
+        },
+        {
+          "name": "completionPaginationBeyondHundredIsStableAndTenantScoped",
+          "seconds": 3.864,
+          "passed": true
+        },
+        {
+          "name": "step10ManualAssetsMappingsAndCycles",
+          "seconds": 0.637,
+          "passed": true
+        },
+        {
+          "name": "registrationRejectsCaseInsensitiveDuplicatesAndNeverClaimsLegacyIdentities",
+          "seconds": 0.422,
+          "passed": true
+        },
+        {
+          "name": "hardeningForeignUuidMatrixIsHiddenByHttpAndRestrictedSql",
+          "seconds": 0.543,
+          "passed": true
+        },
+        {
+          "name": "concurrentRegistrationCreatesExactlyOneUserCredentialAndAudit",
+          "seconds": 0.282,
+          "passed": true
+        },
+        {
+          "name": "step10NewTablesEnforceForcedRlsAndTenantForeignKeys",
+          "seconds": 0.144,
+          "passed": true
+        },
+        {
+          "name": "localDevelopmentHttpImportUsesOnlyCsvParserInputAndTenantScopedResources",
+          "seconds": 0.594,
+          "passed": true
+        },
+        {
+          "name": "expiredMissingAndInvalidPreviewsFailWithoutMutation",
+          "seconds": 0.109,
+          "passed": true
+        },
+        {
+          "name": "completionQueueRechecksOwnershipAndAllProviderOutcomes",
+          "seconds": 0.689,
+          "passed": true
+        },
+        {
+          "name": "hardeningColumnCurationAndUnchangedTagsSurviveReimportWithoutFakeHistory",
+          "seconds": 0.43,
+          "passed": true
+        },
+        {
+          "name": "passwordChangeAndRecoveryRevokeExistingSessions",
+          "seconds": 1.1,
+          "passed": true
+        },
+        {
+          "name": "completionCuratedOwnersTagsAndHistoryRemainSeparate",
+          "seconds": 0.458,
+          "passed": true
+        },
+        {
+          "name": "hardeningRegisteredDependenciesCannotBeInsertedOrMovedAndMetricsRequireRegistration",
+          "seconds": 0.467,
+          "passed": true
+        },
+        {
+          "name": "concurrentBatchesAndRepeatedCommitsPersistOnceWithAccurateResults",
+          "seconds": 0.14,
+          "passed": true
+        },
+        {
+          "name": "completionQueueRecoversInterruptedAcquisition",
+          "seconds": 2.854,
+          "passed": true
+        },
+        {
+          "name": "completionDraftEditsAreOptimisticAndRegisteredVersionsImmutable",
+          "seconds": 0.46,
+          "passed": true
+        },
+        {
+          "name": "hardeningCompleteInventoriesRespectScopePreserveIdsAndRecordColumnChanges",
+          "seconds": 0.176,
+          "passed": true
+        },
+        {
+          "name": "clientIdentityHeadersDoNotSelectAnOrganization",
+          "seconds": 0.102,
+          "passed": true
+        },
+        {
+          "name": "legacyCredentiallessAccountsRequireDeliberateAdministratorRecovery",
+          "seconds": 0.612,
+          "passed": true
+        },
+        {
+          "name": "expiredSessionCannotAccessProtectedApis",
+          "seconds": 1.615,
+          "passed": true
+        },
+        {
+          "name": "step10MissingEncryptionDoesNotBlockManualWork",
+          "seconds": 0.425,
+          "passed": true
+        },
+        {
+          "name": "obsoleteDevelopmentPropertiesNeverAuthenticateRequests",
+          "seconds": 0.177,
+          "passed": true
+        },
+        {
+          "name": "hardeningConnectionTestsCannotPublishSuccessAfterCredentialRotation",
+          "seconds": 0.428,
+          "passed": true
+        },
+        {
+          "name": "invitationOnboardingHashExpiryReplayAndExistingIdentity",
+          "seconds": 0.93,
+          "passed": true
+        },
+        {
+          "name": "step10RealPythonGenericJsonSqlAndCommit",
+          "seconds": 1.084,
+          "passed": true
+        },
+        {
+          "name": "lateDatabaseFailureRollsBackAllCanonicalChangesAndBatchStatus",
+          "seconds": 0.178,
+          "passed": true
+        },
+        {
+          "name": "authenticationCsrfFixationLogoutAndDisabledAccounts",
+          "seconds": 0.638,
+          "passed": true
+        },
+        {
+          "name": "multiOrganizationUserResolvesSelectedOrganizationAndTeamPermissions",
+          "seconds": 0.096,
+          "passed": true
+        },
+        {
+          "name": "sameNamesAreIndependentAndEachOrganizationSeesOnlyItsOwnAssets",
+          "seconds": 0.094,
+          "passed": true
+        },
+        {
+          "name": "loginRateLimitsAndBoundedJsonRequests",
+          "seconds": 0.372,
+          "passed": true
+        },
+        {
+          "name": "step10ConnectionLifecycleCredentialsAndIsolation",
+          "seconds": 0.652,
+          "passed": true
+        },
+        {
+          "name": "hardeningRepresentativeCatalogAndGraphStayBounded",
+          "seconds": 0.704,
+          "passed": true
+        },
+        {
+          "name": "hardeningOwnerPromotionSerializesWithAccountDeactivation",
+          "seconds": 0.119,
+          "passed": true
+        },
+        {
+          "name": "teamPermissionsAndLastOwnerProtectionsAreServerEnforced",
+          "seconds": 0.596,
+          "passed": true
+        },
+        {
+          "name": "hardeningExpiredLeaseCannotFinishInsideAnAlreadyOpenTransaction",
+          "seconds": 0.405,
+          "passed": true
+        },
+        {
+          "name": "hardeningMetricMetadataUsesRevisionsAndRevokedUsageLeavesImpact",
+          "seconds": 0.528,
+          "passed": true
+        },
+        {
+          "name": "hardeningChangedConfigurationAndOlderDiscoveryPreviewsCannotOverwriteCurrentMetadata",
+          "seconds": 0.127,
+          "passed": true
+        },
+        {
+          "name": "previewIsReadOnlyAndCommitReportsIncrementalChangesWithStableIdentities",
+          "seconds": 0.134,
+          "passed": true
+        },
+        {
+          "name": "databaseRejectsCrossOrganizationAssetColumnsLineageAndTeamReferences",
+          "seconds": 0.108,
+          "passed": true
+        },
+        {
+          "name": "step10RuntimeGuardRejectsMissingSecretRls",
+          "seconds": 0.101,
+          "passed": true
+        },
+        {
+          "name": "registeredUserCanAcceptAnInvitationUsingTheirMatchingSession",
+          "seconds": 0.544,
+          "passed": true
+        },
+        {
+          "name": "foreignImportsCannotBePreviewedRetrievedOrCommitted",
+          "seconds": 0.099,
+          "passed": true
+        },
+        {
+          "name": "hardeningLiveReportAssociationChangesRetireOnlyOldAcquiredEdges",
+          "seconds": 0.144,
+          "passed": true
+        },
+        {
+          "name": "loginAuditFailureDoesNotLeaveAnAuthenticatedSession",
+          "seconds": 0.38,
+          "passed": true
+        },
+        {
+          "name": "reimportDeduplicatesOnlyWithinOrganizationAndPreservesIds",
+          "seconds": 0.123,
+          "passed": true
+        },
+        {
+          "name": "concurrentInvitationAcceptanceIsSingleUseAndAtomic",
+          "seconds": 0.466,
+          "passed": true
+        },
+        {
+          "name": "realPythonProcessorHttpWorkflowSatisfiesAcceptanceCases",
+          "seconds": 1.274,
+          "passed": true
+        },
+        {
+          "name": "permissionDtosAndSourceOwnershipTransfersUseCurrentRoles",
+          "seconds": 0.445,
+          "passed": true
+        },
+        {
+          "name": "columnTypeUpdatesPreserveHumanDescriptionsOwnershipAndAbsentColumns",
+          "seconds": 0.126,
+          "passed": true
+        },
+        {
+          "name": "runtimeCannotReadGlobalIdentityAlterPoliciesOrGrantItselfMembership",
+          "seconds": 0.103,
+          "passed": true
+        },
+        {
+          "name": "hardeningReadinessSeparatesLivenessDatabaseAndProcessorAndCorrelatesFailures",
+          "seconds": 0.195,
+          "passed": true
+        },
+        {
+          "name": "step10FormulasMetricVersionsAndReporting",
+          "seconds": 0.476,
+          "passed": true
+        },
+        {
+          "name": "completionQueueRetryCancellationAndPermanentErrors",
+          "seconds": 0.559,
+          "passed": true
+        },
+        {
+          "name": "multiOrganizationRolesHeadersAndLiveRevocation",
+          "seconds": 0.461,
+          "passed": true
+        },
+        {
+          "name": "registrationValidatesEveryFieldAndCsrfBeforeCreatingAccounts",
+          "seconds": 0.182,
+          "passed": true
+        },
+        {
+          "name": "hardeningEveryPersonaUsesFreshServerPermissionsAcrossCoreWrites",
+          "seconds": 0.753,
+          "passed": true
+        },
+        {
+          "name": "concurrentOwnerDemotionsNeverLeaveOrganizationOwnerless",
+          "seconds": 0.527,
+          "passed": true
+        },
+        {
+          "name": "registrationAuditFailureRollsBackTheAccountAndCredentials",
+          "seconds": 0.283,
+          "passed": true
+        },
+        {
+          "name": "completionQueueSurvivesRestartAndPreservesProviderIdentities",
+          "seconds": 0.863,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "command": "TRACE_TEST_ALLOW_RESET=true TRACE_TEST_ADMIN_URL=jdbc:postgresql://localhost:55438/trace_tenancy_test ./mvnw -o package (temporary backend copy; new isolated server; rich V5/V7/V8/V10 upgrade fixtures)"
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "version": "10",
+    "file": "V10__curation_drafts_and_pagination.sql",
+    "crc32": -314753942,
+    "initialAppliedCRC": -314753942,
+    "matchesExistingHistory": true,
+    "sha256": "262f3bb1da044f8506bf5dfe322a882fe7feb2fbaa676a4d8898e5c40cccfa34"
+  },
+  {
+    "version": "11",
+    "file": "V11__legacy_discovery_recovery.sql",
+    "crc32": -71889205,
+    "initialAppliedCRC": null,
+    "matchesExistingHistory": null,
+    "sha256": "74a42110f84d439ded1c4482b6fe25c0332d0cf5c6cc4c6f1fca121b020dc905"
+  },
+  {
+    "version": "12",
+    "file": "V12__registered_dependency_integrity.sql",
+    "crc32": -1561510657,
+    "initialAppliedCRC": null,
+    "matchesExistingHistory": null,
+    "sha256": "2f3ce7cf4fef9cd7bc7395addbe3fb941eaf11637e173c5442a4e0ff68a77ad0"
+  },
+  {
+    "version": "13",
+    "file": "V13__reconciliation_history.sql",
+    "crc32": -249156827,
+    "initialAppliedCRC": null,
+    "matchesExistingHistory": null,
+    "sha256": "84ea49dc0bd31c7f882b85ee93669d43f131e6f470a42cccebb5dd0e0070cac7"
+  },
+  {
+    "version": "14",
+    "file": "V14__preserve_manual_column_curation.sql",
+    "crc32": -1566142899,
+    "initialAppliedCRC": null,
+    "matchesExistingHistory": null,
+    "sha256": "8ceeea2ac1ab3750aac81b015dd9ffcff612fec225d4a6a2094761d3de74264c"
+  },
+  {
+    "version": "15",
+    "file": "V15__serialize_owner_transitions.sql",
+    "crc32": -1527652767,
+    "initialAppliedCRC": null,
+    "matchesExistingHistory": null,
+    "sha256": "e06933266ace4630553c4630c48f6a9fba19ee42f40439c256f0ca00cf9cc162"
+  },
+  {
+    "version": "1",
+    "file": "V1__create_core_registry.sql",
+    "crc32": 1231137674,
+    "initialAppliedCRC": 1231137674,
+    "matchesExistingHistory": true,
+    "sha256": "f5698817d09db6ba1e9ef146d496f8f3588330ab6e0752584b1d32d9e7084676"
+  },
+  {
+    "version": "2",
+    "file": "V2__organization_foundation.sql",
+    "crc32": 1291532820,
+    "initialAppliedCRC": 1291532820,
+    "matchesExistingHistory": true,
+    "sha256": "904e260b30afc4fd6a2e7e83a049cc423d8de7238e900c39b2c6498368e456c1"
+  },
+  {
+    "version": "3",
+    "file": "V3__tenant_row_security.sql",
+    "crc32": -339943997,
+    "initialAppliedCRC": -339943997,
+    "matchesExistingHistory": true,
+    "sha256": "5cede3e814eba7c566c417f812e7dc194912227e83097aeedd66caef32e645f3"
+  },
+  {
+    "version": "4",
+    "file": "V4__metadata_import_results.sql",
+    "crc32": 962514178,
+    "initialAppliedCRC": 962514178,
+    "matchesExistingHistory": true,
+    "sha256": "d17bc6d0c04a7e9f9246ad95bf5702ac62fa35c4336e8172250f362d3632a606"
+  },
+  {
+    "version": "5",
+    "file": "V5__authentication_and_authorization.sql",
+    "crc32": -1732908173,
+    "initialAppliedCRC": -1732908173,
+    "matchesExistingHistory": true,
+    "sha256": "7f8f4d911203750be558f9bf36188e630dec264f0651b11c81c4f6a52cb9af0a"
+  },
+  {
+    "version": "6",
+    "file": "V6__local_account_registration.sql",
+    "crc32": -1370193393,
+    "initialAppliedCRC": -1370193393,
+    "matchesExistingHistory": true,
+    "sha256": "15f9e45959842a22fbbd8606238bdd3c061c9f91794f7b8416c4a48424c4be6a"
+  },
+  {
+    "version": "7",
+    "file": "V7__metadata_integration.sql",
+    "crc32": 1917989982,
+    "initialAppliedCRC": 1917989982,
+    "matchesExistingHistory": true,
+    "sha256": "60e565c81caa0e5efd4c2a8d57a429d8bf5c7e77d8691fdb08e13db89150af71"
+  },
+  {
+    "version": "8",
+    "file": "V8__formula_column_dependencies.sql",
+    "crc32": -1165535424,
+    "initialAppliedCRC": -1165535424,
+    "matchesExistingHistory": true,
+    "sha256": "6970ec2dad98928419aec28ac8a8ce79bcd79e34a7ac1275aa3be66ac61ea916"
+  },
+  {
+    "version": "9",
+    "file": "V9__durable_discovery_queue.sql",
+    "crc32": -2052125672,
+    "initialAppliedCRC": -2052125672,
+    "matchesExistingHistory": true,
+    "sha256": "f5333b5d94555c6cf0c25fb210bd4d35089d847e29caa827306a22cff9258616"
+  }
+]

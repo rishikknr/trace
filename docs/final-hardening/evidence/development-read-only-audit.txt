@@ -1,0 +1,27 @@
+BEGIN
+ version |                  script                  |  checksum   | success 
+---------+------------------------------------------+-------------+---------
+ 1       | V1__create_core_registry.sql             |  1231137674 | t
+ 2       | V2__organization_foundation.sql          |  1291532820 | t
+ 3       | V3__tenant_row_security.sql              |  -339943997 | t
+ 4       | V4__metadata_import_results.sql          |   962514178 | t
+ 5       | V5__authentication_and_authorization.sql | -1732908173 | t
+(5 rows)
+
+    rolname     | rolsuper | rolbypassrls 
+----------------+----------+--------------
+ trace_migrator | f        | f
+ trace_runtime  | f        | f
+(2 rows)
+
+ active_organizations_without_active_owner 
+-------------------------------------------
+                                         1
+(1 row)
+
+ active_teams_without_active_owner 
+-----------------------------------
+                                 0
+(1 row)
+
+COMMIT

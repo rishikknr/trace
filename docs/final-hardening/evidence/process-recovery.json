@@ -1,0 +1,25 @@
+{
+  "database": "disposable 55437/trace_hardening_browser",
+  "provider": "CONTROLLED SIMULATION; LIVE UNVERIFIED",
+  "backendRestart": {
+    "runId": "7c3b420c-aea5-4cfe-b066-12d9b0c4cce2",
+    "originalPid": 11386,
+    "replacementPid": 11389,
+    "status": "COMPLETED",
+    "attempts": [
+      "INTERRUPTED",
+      "COMPLETED"
+    ]
+  },
+  "processorRestart": {
+    "runId": "7f5609e7-41f5-4705-afb8-da6fa1637e07",
+    "interruptedStatus": "RETRY_WAIT",
+    "errorCode": "PROCESSOR_UNAVAILABLE",
+    "restoredStatus": "COMPLETED",
+    "attemptCount": 2,
+    "canonicalAssetsBeforeExplicitCommit": 0
+  },
+  "result": "PASS",
+  "artifactSha256": "56f9abe20cab28499c6ee2163ef9437615e6b6f4764603dd28f20b8966746524",
+  "schemaContract": 15
+}

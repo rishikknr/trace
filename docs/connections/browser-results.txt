@@ -1,0 +1,18 @@
+  ✓   1 test/browser/connections.spec.ts:60:1 › S3 wizard tests SDK access, previews object metadata, explicitly commits and reuses asset identities (8.2s)
+  ✓   2 test/browser/connections.spec.ts:159:1 › S3 failures remain editable, show scoped recovery and support accessible mobile setup (3.3s)
+  ✓   3 test/browser/hardening.spec.ts:88:1 › identity, signup validation and no-organization onboarding (1.7s)
+  ✓   4 test/browser/hardening.spec.ts:122:1 › connection create/edit, mapped CSV preview refresh, commit and reimport (8.8s)
+  ✓   5 test/browser/hardening.spec.ts:248:1 › manual asset, additional column visibility, ownership tags and direct edit navigation (2.6s)
+  ✓   6 test/browser/hardening.spec.ts:300:1 › formula draft editing, immutable versions, metric metadata, report usage and revoke (4.4s)
+  ✓   7 test/browser/hardening.spec.ts:461:1 › manual dataset and column mappings persist and feed the lineage graph (3.2s)
+  ✓   8 test/browser/hardening.spec.ts:523:1 › viewer denials and organization switching clear prior tenant data (5.7s)
+  ✓   9 test/browser/hardening.spec.ts:567:1 › platform provisioning, invitations and assisted password recovery (3.3s)
+  ✓  10 test/browser/hardening.spec.ts:649:1 › discovery enqueue, attempts, cancellation and retry use the durable real queue (17.9s)
+  ✓  11 test/browser/hardening.spec.ts:700:1 › responsive workspace, keyboard modal behavior and automated accessibility (13.8s)
+  ✓  12 test/browser/hardening.spec.ts:806:1 › team administration creates, edits and persists the responsible owner (2.3s)
+  ✓  13 test/browser/hardening.spec.ts:849:1 › accessibility across loaded forms, graph and version comparison (13.8s)
+  ✓  14 test/browser/hardening.spec.ts:915:1 › browser pagination beyond 100 stays bounded and preserves final record access (3.1s)
+  ✓  15 test/browser/hardening.spec.ts:961:1 › authentication layouts at six widths and measured lazy editor loading (2.8s)
+  15 passed (1.6m)
+
+Final targeted S3 checks: 2 passed (11.9s).

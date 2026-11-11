@@ -1,0 +1,99 @@
+{
+  "verifiedAt": "2026-11-11T17:47:04.803567+05:30",
+  "backend": {
+    "suites": [
+      {
+        "name": "com.trace.backend.TenantIsolationIntegrationTests",
+        "tests": 75,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.trace.backend.ProcessorClientTests",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.trace.backend.TenantConfigurationTests",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.trace.backend.MigrationUpgradeIntegrationTests",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.trace.backend.ConnectorValidationTests",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.trace.backend.CredentialCipherTests",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.trace.backend.IntegrationProcessorBoundaryTests",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 104,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "database": "Disposable trace_tenancy_test on port 55438; not development data",
+    "command": "JAVA_HOME=$(/usr/libexec/java_home -v 21) TRACE_TEST_ADMIN_URL=jdbc:postgresql://localhost:55438/trace_tenancy_test TRACE_TEST_ALLOW_RESET=true ./mvnw test -q"
+  },
+  "processor": {
+    "passed": 122,
+    "command": "cd processor && .venv/bin/python -m unittest discover -s tests",
+    "providerResponses": "deterministic mocks; actual adapter logic"
+  },
+  "frontend": {
+    "nodeUtilityPassed": 4,
+    "vitestPassed": 48,
+    "command": "npm --prefix frontend test",
+    "build": "passed",
+    "lint": "passed"
+  },
+  "browser": {
+    "passed": 15,
+    "failed": 0,
+    "command": "TRACE_BROWSER_ACCEPTANCE=disposable npm --prefix frontend run test:browser",
+    "database": "Disposable trace_hardening_browser on port 55437",
+    "testOnlyProvider": "tests.acceptance_processor:app; explicitly labeled S3/GitHub simulations",
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1280,
+      1440
+    ],
+    "connectionsAxeViolations": 0,
+    "finalBackendSha256": "b79935ce48867a359480e79bd0f98bf3425aa8c75b2bbc2f61bfae55a77fe4d6",
+    "finalTargetedS3Rerun": {
+      "passed": 2,
+      "failed": 0,
+      "reason": "Final queued/start timestamp presentation check"
+    }
+  },
+  "followUpSnowflakeVerification": "snowflake-live-workflow.json"
+}

@@ -1,0 +1,8 @@
+{
+  "testedImmutableArtifact": "trace-v15-56f9abe20cab28499c6ee2163ef9437615e6b6f4764603dd28f20b8966746524.jar",
+  "testedImmutableSHA256": "56f9abe20cab28499c6ee2163ef9437615e6b6f4764603dd28f20b8966746524",
+  "finalBuildSHA256": "56f9abe20cab28499c6ee2163ef9437615e6b6f4764603dd28f20b8966746524",
+  "applicationAndLibraryEntriesCompared": 230,
+  "differentEntries": [],
+  "equivalentApplicationContents": true
+}

@@ -1,0 +1,119 @@
+{
+  "backend": {
+    "summary": {
+      "tests": 119,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "name": "com.trace.backend.ConnectorValidationTests",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 0.004
+      },
+      {
+        "name": "com.trace.backend.CredentialCipherTests",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 0.004
+      },
+      {
+        "name": "com.trace.backend.GraphExplorerIntegrationTests",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 7.679
+      },
+      {
+        "name": "com.trace.backend.IntegrationProcessorBoundaryTests",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 0.104
+      },
+      {
+        "name": "com.trace.backend.MigrationUpgradeIntegrationTests",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 4.068
+      },
+      {
+        "name": "com.trace.backend.ProcessorClientTests",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 0.046
+      },
+      {
+        "name": "com.trace.backend.TenantConfigurationTests",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 0.019
+      },
+      {
+        "name": "com.trace.backend.TenantIsolationIntegrationTests",
+        "tests": 75,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 42.954
+      }
+    ],
+    "database": "Disposable PostgreSQL 16 at 127.0.0.1:55459/trace_tenancy_test",
+    "command": "TRACE_TEST_ADMIN_URL=jdbc:postgresql://127.0.0.1:55459/trace_tenancy_test TRACE_TEST_ALLOW_RESET=true JAVA_HOME=$(/usr/libexec/java_home -v 21) backend/mvnw -o -Daether.syncContext.named.factory=noop -f backend/pom.xml -q package"
+  },
+  "frontend": {
+    "utilityTests": 4,
+    "componentTests": 58,
+    "failures": 0,
+    "productionBuild": "passed",
+    "lint": "passed without warnings",
+    "browserInteractionEngine": "React Flow; ELK layered layout in a Web Worker"
+  },
+  "processor": {
+    "tests": 140,
+    "failures": 0
+  },
+  "browser": {
+    "status": "Passed for recorded scenarios; browser access restored and final captures / responsive checks completed",
+    "completed": [
+      "Normal existing-account sign-in",
+      "Source inventory and SQL analysis/confirmation",
+      "Column impact and complete path to NET_REVENUE",
+      "Formula validation and registered version history",
+      "Metric detail and reporting empty state",
+      "Full-screen, Escape, selection, highlight and zoom",
+      "Disposable level-13 cyclic graph",
+      "106-node graph continuation and previous page",
+      "Manual report/measure/model/visual registration",
+      "Metric-version usage mapping and reload persistence",
+      "Backend restart persistence of reporting mappings",
+      "Reporting graph reachability and revocation removing active impact",
+      "Final standalone source-overview stylesheet and source/evidence inventory",
+      "Final formula and metric named dependencies and readable immutable business snapshot",
+      "SQL candidate analysis and paginated evidence history on final runtime",
+      "390px source overview, formula, metric, transformation review, lineage and impact reflow",
+      "1024px formula and lineage layouts",
+      "Mobile fullscreen and Escape; viewport reset",
+      "Final complete NET_AMOUNT-to-NET_REVENUE path control"
+    ],
+    "pending": [],
+    "limitations": [
+      "Physical mobile hardware and complete screen-reader audit not performed",
+      "Provider execution/load history and deployed-view equality not independently verified"
+    ]
+  }
+}

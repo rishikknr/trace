@@ -1,0 +1,11 @@
+{
+  "migration": "V17",
+  "releaseSha256": "8bfb5f4bb1c69a4d88489effb0726e13a638d209f26253999fdf620f305a2a73",
+  "backup": ".trace-local/backups/lineage-v17-20261111T142222Z",
+  "originalTableFingerprintsPreserved": true,
+  "databaseRolesPreserved": true,
+  "encryptionKeyFilePreserved": true,
+  "backendHealth": "UP",
+  "processorHealth": "ok",
+  "sessionsRequireSignIn": true
+}

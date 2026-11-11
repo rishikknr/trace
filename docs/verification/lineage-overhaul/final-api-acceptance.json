@@ -1,0 +1,92 @@
+{
+  "sourceInventory": {
+    "NOVAMART_DB.RAW": 22,
+    "NOVAMART_DB.STAGING": 22,
+    "NOVAMART_DB.CURATED": 3,
+    "NOVAMART_DB.ANALYTICS": 6,
+    "S3_FILES": 22,
+    "ADDITIONAL_FILE_IMPORT_DATASETS": 2,
+    "REGISTERED_SQL_TRANSFORMATIONS": 31
+  },
+  "catalogTypeFilters": {
+    "views": 31,
+    "tables": 22
+  },
+  "canonicalGraph": {
+    "totalNodes": 40,
+    "totalEdges": 42,
+    "completeTraversal": true,
+    "depthLimit": false
+  },
+  "pagination": {
+    "limit": 3,
+    "pages": 14,
+    "uniqueEdges": 42,
+    "uniqueNodes": 40,
+    "duplicateEdges": 0,
+    "durationMs": 487
+  },
+  "representativeTransformations": {
+    "NOVAMART_DB.STAGING.STG_FACT_ORDERS": {
+      "upstreamNodes": 4,
+      "upstreamEdges": 3,
+      "evidenceSnapshots": 1
+    },
+    "NOVAMART_DB.CURATED.FCT_RECOGNIZED_ORDERS": {
+      "upstreamNodes": 10,
+      "upstreamEdges": 9,
+      "evidenceSnapshots": 1
+    },
+    "NOVAMART_DB.ANALYTICS.MONTHLY_REVENUE": {
+      "upstreamNodes": 13,
+      "upstreamEdges": 13,
+      "evidenceSnapshots": 1
+    }
+  },
+  "columnReachability": {
+    "ORDER_ID": {
+      "id": "ad73bdd4-bf7e-479e-b880-051f476cdd73",
+      "totalNodes": 3,
+      "totalEdges": 2,
+      "hasMore": false
+    },
+    "NET_AMOUNT": {
+      "id": "4e981cfa-ba2b-4c5b-a654-818204d46494",
+      "totalNodes": 16,
+      "totalEdges": 15,
+      "hasMore": false
+    },
+    "ORDER_TOTAL": {
+      "id": "9b158553-e723-4214-ad46-9e86d925f85b",
+      "totalNodes": 3,
+      "totalEdges": 2,
+      "hasMore": false
+    },
+    "CUSTOMER_ID": {
+      "id": "1bb6e56c-4e05-422a-8e63-2161152329ab",
+      "totalNodes": 5,
+      "totalEdges": 4,
+      "hasMore": false
+    }
+  },
+  "netAmountToMetricPath": [
+    "NOVAMART_DB.RAW.FACT_ORDERS.NET_AMOUNT",
+    "NOVAMART_DB.STAGING.STG_FACT_ORDERS.NET_AMOUNT",
+    "NOVAMART_DB.CURATED.FCT_RECOGNIZED_ORDERS.NET_REVENUE_INR",
+    "NovaMart net revenue by month \u00b7 v1",
+    "NovaMart net revenue \u00b7 v1"
+  ],
+  "formulaState": "REGISTERED",
+  "metricVersionCalculation": "NovaMart net revenue by month",
+  "metricSnapshotReadable": true,
+  "registeredReportMappings": 0,
+  "powerBIConnected": false,
+  "overviewCounts": {
+    "assets": 108,
+    "relationships": 90,
+    "columns": 251,
+    "metrics": 1
+  },
+  "cloudOperationsPerformedDuringAcceptance": false,
+  "basis": "Read-only acceptance against existing committed cloud inventory and explicitly registered GitHub SQL evidence; no cloud data or schema mutations"
+}

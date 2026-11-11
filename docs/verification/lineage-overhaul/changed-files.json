@@ -1,0 +1,142 @@
+[
+  {
+    "path": "README.md",
+    "sha256": "bf4af6417117051c8fbc6ff75c2744595902e4aa5702c6a5d0e2328592ccea34"
+  },
+  {
+    "path": "backend/ops/build-release.sh",
+    "sha256": "24544aff6bdcf774155cad45b462ec74aa74f5cce267ade9170d7a0e26d36c6f"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/controller/LineageController.java",
+    "sha256": "dad69242a9a6dad7f58b4ba274485b087cb51412d36146e571c17bb35ca530c4"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/controller/TransformationController.java",
+    "sha256": "6d95f785e5f3155572b41c2aabefb0e50493b73dd2282bdcd452072fa177dafb"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/repository/BrowseRepository.java",
+    "sha256": "d16d738fbf563d0d3bef20109ccd7d413f95918d55ca26370221be6bcec50b8a"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/repository/GraphExplorerRepository.java",
+    "sha256": "86cb983f9795228042756ce83d84f3d3536c3a2b641abe1877cbf7f716a9c611"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/repository/MetricRepository.java",
+    "sha256": "e15253a16eb20a960702f7a4ee1626ef40662f66e641f97fd9ddb2ae41172d4f"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/service/FormulaService.java",
+    "sha256": "96ac16640f7a8723923f84ee5a86ecc21aadc5211c269fc274801ab1b018ba92"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/service/LineageService.java",
+    "sha256": "e721a9cb1dc9aba1cdeea24186dd75cc979036ed8f6038d74fca849b780d5661"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/service/TransformationService.java",
+    "sha256": "16d7ddb6f92963c1727dafdbe2910773634bf10e73d681896a4c12463fdd3da0"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/tenancy/RuntimeDatabaseGuard.java",
+    "sha256": "2a874f9e6a6148c4a76eb07c59653e82cffa78269fe43f716498559ca461a6a1"
+  },
+  {
+    "path": "backend/src/main/java/com/trace/backend/tenancy/TenantTransactions.java",
+    "sha256": "1157a12627e9333f9abb9c090c6c4283fd5bb5ec865f2f58318f56856e2aeaa1"
+  },
+  {
+    "path": "backend/src/main/resources/db/migration/V17__lineage_evidence.sql",
+    "sha256": "5b6af982823ee0d75e779879126d21c58e0987f717bf10f9eced7a20266c9bb1"
+  },
+  {
+    "path": "backend/src/test/java/com/trace/backend/GraphExplorerIntegrationTests.java",
+    "sha256": "17e496818afcb8569fe23fd2a828403478035605506c6bc94004f9b33839eb9f"
+  },
+  {
+    "path": "backend/src/test/java/com/trace/backend/MigrationUpgradeIntegrationTests.java",
+    "sha256": "703a887b4061a162c415eb89355290313188314ed651a6122b95bdddf9150d2e"
+  },
+  {
+    "path": "backend/src/test/java/com/trace/backend/TenantIsolationIntegrationTests.java",
+    "sha256": "fe472939a54627cbb0ebd3d1106b15f13f2aaeb8be470fc7bf0839e243bd76e0"
+  },
+  {
+    "path": "frontend/package-lock.json",
+    "sha256": "7defe1e180471224b35e83af6c5fcef8f5bb6752cec910a8ee046fa2679ec97b"
+  },
+  {
+    "path": "frontend/package.json",
+    "sha256": "34ee452af81d357b9218151352e96fce234ccbc20cb7d5995981f9a5855af3de"
+  },
+  {
+    "path": "frontend/src/app/TraceApp.tsx",
+    "sha256": "81114c875e38e0ef4bf05e4c44213aab11cb0a39eb04ac5fe3a97cf93bc4578b"
+  },
+  {
+    "path": "frontend/src/app/WorkspaceShell.tsx",
+    "sha256": "131d10387a63c3ba6a8426a74f02694be7f211eaca45d535edc64258975418fd"
+  },
+  {
+    "path": "frontend/src/components/WorkspaceErrorBoundary.tsx",
+    "sha256": "dd73c7f614e6296e37ee289b57d6530a39bc72835d55cd68b6c869d9720325d8"
+  },
+  {
+    "path": "frontend/src/features/catalog/CatalogPage.tsx",
+    "sha256": "ead9d719c63b10681105dd17458b218671529bf39594e33633e070c50102fc93"
+  },
+  {
+    "path": "frontend/src/features/integration/DataFlowOverview.tsx",
+    "sha256": "ad70f73feae49609a1069d8348712971be6756f0d76f3b2b1179056ddc083b4c"
+  },
+  {
+    "path": "frontend/src/features/integration/DefinitionDependencies.tsx",
+    "sha256": "67e5a6d95c4dad797ab8ccb3859323e52a407555283fc86e8ac6b3842dc33be3"
+  },
+  {
+    "path": "frontend/src/features/integration/FormulaStudio.tsx",
+    "sha256": "87a2ce981065370ff53cb8b8cdfae37062ecf7e32f828038f9599900fb3d211f"
+  },
+  {
+    "path": "frontend/src/features/integration/LineageGraph.tsx",
+    "sha256": "22a859e916f96cdaa9f6f657de5ea0685d27f9cee2681abded64921dae908fb8"
+  },
+  {
+    "path": "frontend/src/features/integration/LineagePage.tsx",
+    "sha256": "e8d02fbb679e78296d7bd3f7c195c59678f8b07f1444e52ea68ca3c8a357ffb4"
+  },
+  {
+    "path": "frontend/src/features/integration/MetricsPage.tsx",
+    "sha256": "1a560c23834bb189ef05198537620fe1d94e790a17443666d88678be95cf1e22"
+  },
+  {
+    "path": "frontend/src/features/integration/TransformationPage.tsx",
+    "sha256": "3d87e8eab170fca4b0ded8a96f2fe6fef96766636c556d7e3205b3962d141970"
+  },
+  {
+    "path": "frontend/src/features/integration/lineage.css",
+    "sha256": "39709e3059f4264e3b3d3f4c593ab9a7b191c3a54588ad81db0bc607d8d8e29d"
+  },
+  {
+    "path": "frontend/src/types/api.ts",
+    "sha256": "592a335af2904b25dc92e412231e40995ec8dccd3ac5df35a172e8f82e54f907"
+  },
+  {
+    "path": "frontend/test/lineage.test.tsx",
+    "sha256": "2bdcfd11fed7f9ad857f255df42c6ba314caef3589f02f139c41f85da91de3c1"
+  },
+  {
+    "path": "processor/app.py",
+    "sha256": "aac29e9362e924a156cd28d70819d0ef1dd794613d3e56a9b922e7867dd9ae55"
+  },
+  {
+    "path": "processor/parsers/sql.py",
+    "sha256": "b479aeb1e07886157f51c61389761c43431545b500302a943666c99e447a7de2"
+  },
+  {
+    "path": "processor/tests/test_lineage_analysis.py",
+    "sha256": "cd0ed1c9630f44c84a52f8a954e51d857c3e5b006b32fc0dc2b05cdf002d6f8b"
+  }
+]

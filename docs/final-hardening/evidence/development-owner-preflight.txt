@@ -1,0 +1,7 @@
+BEGIN
+                  id                  |             name             |       slug        | owner_memberships | active_members 
+--------------------------------------+------------------------------+-------------------+-------------------+----------------
+ 00000000-0000-0000-0000-000000000001 | Legacy registry (unassigned) | legacy-unassigned |                 0 |              0
+(1 row)
+
+COMMIT

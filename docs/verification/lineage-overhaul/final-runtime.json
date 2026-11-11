@@ -1,0 +1,12 @@
+{
+  "releaseSha256": "66323ef33d38cff37318977c636a93bd7fc7caa180a68d6e393c5b730ffa48b5",
+  "backendReadiness": "UP",
+  "databaseChanges": "none; V17 retained",
+  "credentials": "retained without rotation",
+  "allStoredCredentialsPreserved": true,
+  "allNonTransformationAssetIdentitiesPreserved": true,
+  "formulaAndMetricVersionsPreserved": true,
+  "lineageEvidenceAndMappingsPreserved": true,
+  "encryptionKeyPreserved": true,
+  "processorRestartedWithFinalParser": true
+}

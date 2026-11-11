@@ -1,0 +1,25 @@
+
+> frontend@0.0.0 test
+> node --test test/*.test.mjs && vitest run
+
+✔ workspace write actions follow the selected organization's team role (0.262209ms)
+✔ the workspace can defer navigation until the editor confirms discard (0.219791ms)
+✔ CSV mapping preserves quoted and blank source headers (0.482584ms)
+✔ mapping checks catch duplicate source and canonical fields (0.067875ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55.101292
+
+ RUN  v5.1.0 /Users/rishi/Documents/work/DTCC/projects/trace_infra_capstone/trace/frontend
+
+
+ Test Files  7 passed (7)
+      Tests  58 passed (58)
+   Start at  22:10:54
+   Duration  1.72s (environment 55%, tests 27%, setup 12%, import 3%, transform 2%, worker 1%)
+

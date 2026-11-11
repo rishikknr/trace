@@ -1,0 +1,31 @@
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.7 building client environment for production...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                             0.47 kB │ gzip:   0.30 kB
+dist/assets/index-BjJsTrT2.css             22.79 kB │ gzip:   5.79 kB
+dist/assets/permissions-xLF3D157.js         0.16 kB │ gzip:   0.14 kB
+dist/assets/AssetActivity-Ae-d8ntm.js       1.02 kB │ gzip:   0.58 kB
+dist/assets/hooks-Ds1LNFLk.js               1.17 kB │ gzip:   0.69 kB
+dist/assets/AccountHelpPages-tPVDhrV_.js    1.61 kB │ gzip:   0.86 kB
+dist/assets/shared-CIoAjWOS.js              1.95 kB │ gzip:   0.91 kB
+dist/assets/pagination-CNWByHCQ.js          2.67 kB │ gzip:   1.29 kB
+dist/assets/SignUpPage-BcncqbyF.js          3.74 kB │ gzip:   1.44 kB
+dist/assets/OverviewPage-DWlyGO2n.js        6.25 kB │ gzip:   1.99 kB
+dist/assets/CatalogPage-5ZDH8NvG.js         9.27 kB │ gzip:   2.90 kB
+dist/assets/AssetEditor-BxRZqe4g.js        10.02 kB │ gzip:   3.15 kB
+dist/assets/MetricsPage-BILEQVRU.js        11.40 kB │ gzip:   3.40 kB
+dist/assets/ImportCenter-0twrV0br.js       11.48 kB │ gzip:   4.25 kB
+dist/assets/LineagePage-vpAoCD2O.js        15.04 kB │ gzip:   5.04 kB
+dist/assets/FormulaStudio-D2PLwQo0.js      15.62 kB │ gzip:   4.82 kB
+dist/assets/ManagementPages-o2mz2zRw.js    15.68 kB │ gzip:   4.14 kB
+dist/assets/ConnectionsPage-SUBXvjXf.js    17.35 kB │ gzip:   5.55 kB
+dist/assets/index-Dcz79gwV.js             253.69 kB │ gzip:  79.13 kB
+dist/assets/CodeEditor-IobQnej_.js        426.21 kB │ gzip: 138.49 kB
+
+✓ built in 109ms

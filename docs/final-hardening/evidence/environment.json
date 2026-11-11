@@ -1,0 +1,28 @@
+{
+  "observedUTC": "2026-11-11T05:49:58.755556+00:00",
+  "hardware": {
+    "cpu": "Apple M5",
+    "logicalCPUs": 10,
+    "memoryBytes": 17179869184
+  },
+  "os": "macOS 26.6.2 (25G83)",
+  "java": "OpenJDK Homebrew 21.0.13.0.3",
+  "python": "3.12.16",
+  "node": "24.14.1",
+  "chrome": "157.0.8103.40",
+  "postgresql": "16.15",
+  "isolatedReview": {
+    "frontend": "http://127.0.0.1:15174",
+    "backendPort": 18082,
+    "processorPort": 18002,
+    "databasePort": 55437,
+    "readiness": "UP"
+  },
+  "concurrentDevelopmentObservation": {
+    "databaseSchema": 15,
+    "backendPID": 11009,
+    "jarPath": "/Users/rishi/Documents/work/DTCC/projects/trace_infra_capstone/trace/.trace-local/releases/trace-v15.jar",
+    "rolloutPerformedByThisHardeningTask": false,
+    "operatorGateEvidenceVerified": false
+  }
+}
