@@ -6,7 +6,7 @@ services:
     image: 117889972903.dkr.ecr.ap-south-1.amazonaws.com/trace-staging-frontend:${TRACE_IMAGE_TAG:?Image tag required}
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8081:8081"
+      - "127.0.0.1:8080:80"
     depends_on:
       - backend
     networks:
@@ -15,6 +15,8 @@ services:
   backend:
     image: 117889972903.dkr.ecr.ap-south-1.amazonaws.com/trace-staging-backend:${TRACE_IMAGE_TAG:?Image tag required}
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:8081"
 
     env_file:
       - path: /opt/trace/secrets/backend.env
