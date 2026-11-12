@@ -73,6 +73,23 @@ jobs:
             core.info(`Issuer: ${payload.iss}`);
             core.info(`Audience: ${payload.aud}`);
             core.info(`Subject: ${payload.sub}`);
+      
+
+      - name: Verify GitHub OIDC claims
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+            const claims = JSON.parse(
+              Buffer.from(token.split('.')[1], 'base64url').toString()
+            );
+
+            core.info(`ISSUER: ${claims.iss}`);
+            core.info(`AUDIENCE: ${claims.aud}`);
+            core.info(`SUBJECT: ${claims.sub}`);
+            core.info(`REPOSITORY: ${process.env.GITHUB_REPOSITORY}`);
+            core.info(`BRANCH: ${process.env.GITHUB_REF}`);
+
 
 
       - name: Authenticate with AWS using OIDC
@@ -80,6 +97,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::117889972903:role/trace-staging-github-deploy-role
           aws-region: ap-south-1
+          retry-max-attempts: 1
 
       - name: Login to Amazon ECR
         run: |
