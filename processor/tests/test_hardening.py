@@ -4,7 +4,7 @@ import base64
 import unittest
 from unittest.mock import patch
 
-import test_provider_matrix as provider_matrix
+from tests import test_provider_matrix as provider_matrix
 from app import app
 from connectors.providers import BoundedHttp, ProviderError, acquire
 from fastapi import HTTPException
