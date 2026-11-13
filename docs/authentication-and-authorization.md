@@ -1,3 +1,5 @@
+> AWS staging authentication and signup behavior is amended by [the HTTPS/CSRF deployment note](aws-authentication-csrf.md). Earlier local-only signup and proxy-deployment limits below describe the original milestone.
+
 # Authentication and authorization
 
 ## Scope and verified status
