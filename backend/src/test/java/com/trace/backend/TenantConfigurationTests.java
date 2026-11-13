@@ -149,4 +149,17 @@ class TenantConfigurationTests {
     assertFalse(policy.available(request));
   }
 
+  @Test
+  void stagingCanExplicitlyAllowHttpSignupWithoutAllowingCrossSiteSignup() {
+    var env = new org.springframework.mock.env.MockEnvironment()
+        .withProperty("trace.security.public-signup-enabled", "true")
+        .withProperty("trace.security.public-signup-require-https", "false");
+    env.setActiveProfiles("staging");
+    var policy = new LocalSignupPolicy(env, false);
+    var request = new MockHttpServletRequest();
+    assertTrue(policy.available(request));
+    request.addHeader("Sec-Fetch-Site", "cross-site");
+    assertFalse(policy.available(request));
+  }
+
 }

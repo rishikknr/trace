@@ -35,7 +35,9 @@ services:
       SPRING_FLYWAY_USER: trace_migrator
 
       TRACE_PROCESSOR_URL: http://processor:8000
-      TRACE_SECURE_COOKIES: "true"
+      # Allow the explicitly requested public HTTP staging access. Tomcat still
+      # marks cookies Secure when the trusted forwarded request scheme is HTTPS.
+      TRACE_SECURE_COOKIES: "false"
 
       JAVA_TOOL_OPTIONS: "-Xms128m -Xmx512m"
 

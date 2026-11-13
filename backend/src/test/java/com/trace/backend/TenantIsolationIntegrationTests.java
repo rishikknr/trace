@@ -1296,6 +1296,37 @@ class TenantIsolationIntegrationTests {
   }
 
   @Test
+  void httpStagingRegistrationSessionPersistenceAndLogoutLogin() throws Exception {
+    credential(SHARED, "Testing password for A!");
+    try (var app = securityApp("--spring.profiles.active=staging",
+        "--trace.security.local-token-delivery=false", "--trace.security.local-signup-enabled=false")) {
+      var browser = new BrowserSession(app);
+      var csrf = browser.get("/auth/csrf");
+      assertStatus(200, csrf);
+      assertTrue(csrf.headers().allValues("set-cookie").stream().anyMatch(c ->
+          c.contains("HttpOnly") && c.contains("SameSite=Lax") && c.contains("Path=/") && !c.contains("Secure")));
+      assertTrue(new ObjectMapper().readTree(browser.get("/auth/registration").body()).get("enabled").asBoolean());
+      var registered = browser.send("/auth/register", Map.of("displayName", "HTTP signup",
+          "email", "http-signup@example.test", "password", "HTTP signup password!",
+          "confirmPassword", "HTTP signup password!"), "POST");
+      assertStatus(201, registered);
+      UUID id = UUID.fromString(new ObjectMapper().readTree(registered.body()).get("id").asText());
+      assertEquals(0, admin.queryForObject("SELECT count(*) FROM organization_memberships WHERE user_id=?", Integer.class, id));
+      String before = browser.sessionId();
+      assertStatus(200, browser.login("shared@example.test", "Testing password for A!"));
+      assertNotEquals(before, browser.sessionId());
+      assertStatus(200, browser.get("/auth/me"));
+      browser.select(A);
+      assertStatus(200, browser.get("/assets"));
+      assertStatus(403, browser.send("/auth/logout", null, "POST", false));
+      assertStatus(200, browser.send("/auth/logout", null, "POST"));
+      assertStatus(401, browser.get("/auth/me"));
+      assertStatus(200, browser.login("shared@example.test", "Testing password for A!"));
+      assertStatus(200, browser.get("/auth/me"));
+    }
+  }
+
+  @Test
   void httpsProxyCookiesRegistrationRotationAndUntrustedForwarding() throws Exception {
     credential(SHARED, "Testing password for A!");
     try (var app = securityApp("--spring.profiles.active=staging",
@@ -1358,15 +1389,17 @@ class TenantIsolationIntegrationTests {
       assertStatus(200, browser.send("/api/auth/logout", "POST", null, browser.token()));
       assertStatus(401, browser.send("/api/auth/me", "GET", null, null));
       assertStatus(200, browser.send("/api/auth/login", "POST", login, browser.token()));
-      // Public HTTP must explain why a Secure session cannot be established.
+      // Staging also supports direct HTTP, with scheme-appropriate cookies.
       var plain = HttpClient.newHttpClient().send(HttpRequest.newBuilder(URI.create(base + "/api/auth/csrf"))
           .GET().build(), HttpResponse.BodyHandlers.ofString());
-      assertStatus(400, plain);
-      assertTrue(plain.body().contains("HTTPS_REQUIRED"));
+      assertStatus(200, plain);
+      assertTrue(plain.headers().allValues("set-cookie").stream().anyMatch(c ->
+          c.startsWith("JSESSIONID=") && !c.contains("Secure") && c.contains("HttpOnly")));
     }
     // When the socket peer is not trusted, forged proxy headers cannot enable HTTPS.
     try (var app = securityApp("--spring.profiles.active=staging",
         "--trace.security.local-token-delivery=false", "--trace.security.local-signup-enabled=false",
+        "--server.servlet.session.cookie.secure=true",
         "--server.tomcat.remoteip.internal-proxies=192[.]0[.]2[.]1")) {
       String base = "http://127.0.0.1:" + ((WebServerApplicationContext) app).getWebServer().getPort();
       var response = HttpClient.newHttpClient().send(HttpRequest.newBuilder(URI.create(base + "/api/auth/csrf"))

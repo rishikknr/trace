@@ -1,4 +1,4 @@
-# TRACE authentication through the EC2 HTTPS tunnel
+# TRACE authentication through EC2 HTTP and the HTTPS tunnel
 
 ## Observed failure (November 13, 2026)
 
@@ -39,9 +39,15 @@ has been configured and regression tested.
   the workspace; an existing session's expiry displays a sign-in notice.
 - Spring retains session fixation protection and CSRF rotation at login/logout.
   A backend restart still ends in-memory sessions; ordinary recovery is sign-in.
-- With Secure cookies configured, an insecure CSRF bootstrap returns
-  `HTTPS_REQUIRED`, with instructions to use the HTTPS address. Disabling Secure
-  cookies on a public HTTP deployment is not part of this fix.
+- Staging explicitly supports public HTTP, as requested by the operator.
+  `TRACE_SECURE_COOKIES=false` stops forcing Secure cookies onto HTTP responses.
+  Tomcat still adds Secure automatically when the effective request scheme is
+  HTTPS, including trusted tunnel forwarding. Cookies remain HttpOnly,
+  SameSite=Lax, host-only and Path=/ on both transports.
+- HTTP transports passwords and session cookies without encryption. This is an
+  explicit staging tradeoff. For an HTTPS-only deployment, set
+  `TRACE_SECURE_COOKIES=true` and `trace.security.public-signup-require-https=true`;
+  insecure CSRF bootstrap then returns `HTTPS_REQUIRED`.
 
 ## Proxy trust and deployment
 
@@ -55,7 +61,7 @@ Browser HTTPS -> Cloudflare -> cloudflared on EC2
 
 `compose.prod.yml` now maps host `127.0.0.1:8080` to container `8080`, preserving
 the existing cloudflared origin URL. Public host port 80 still maps to container
-80 for frontend access; it does not provide a secure login transport.
+80 for direct HTTP login and frontend access. HTTP is supported, but unencrypted.
 
 Nginx accepts the exact forwarded scheme `https` only on its tunnel listener
 8080. On public listener 80 it derives the scheme from its own HTTP connection,
@@ -75,7 +81,7 @@ No CI/CD OIDC, ECR, SSM, database migration, persistent volume, database grants 
 health-check behavior changes are required. Deploy both frontend and backend
 images with the updated Compose port mapping. No secret rotation is required.
 
-Staging explicitly enables public signup over HTTPS. The previous local-only
+Staging explicitly enables public signup over HTTP and HTTPS. The previous local-only
 signup option remains local-only; private invitation/recovery token delivery is
 still gated separately. Registration creates an unprivileged USER with **no
 organization membership**. Existing password policy, BCrypt, abuse limits,
@@ -98,11 +104,15 @@ processor/.venv/bin/python -m pytest -q processor/tests
 python3 frontend/test/proxy_integration.py
 ```
 
-Final local results: backend **138 passed, zero skipped** against the new disposable
+Final local results: backend **140 passed, zero skipped** against the new disposable
 PostgreSQL 16 container; frontend **79 Vitest + 4 Node tests passed**; production
 build and lint passed; processor **140 passed** (one upstream deprecation warning);
 Nginx **3 passed**, and `nginx -t` passed. These are local results, separate from
-GitHub deployment and real HTTPS browser validation.
+GitHub deployment and real browser validation. The additional HTTP integration
+test uses a normal browser-style cookie jar (no explicit Cookie bypass), checks
+registration creates no memberships, session rotation/persistence, protected reads,
+CSRF rejection and logout/re-login. The HTTPS proxy test verifies Secure is added
+even when the staging setting does not force it.
 
 The standalone Nginx test uses an isolated official nginx:alpine container with a
 synthetic upstream, verifies both ingress ports and forged-header stripping, and
@@ -110,11 +120,11 @@ stops its own container. It requires a local Docker daemon. Backend transport te
 run in normal CI without PostgreSQL; the existing full DB suite runs when the
 explicit disposable database environment variables are supplied.
 
-Before declaring the deployment verified, open a currently active HTTPS tunnel in
-a browser, sign in, access an authorized organization, refresh, perform a permitted
-mutation, sign out and sign in again. Check the session cookie remains Secure,
-HttpOnly, SameSite=Lax, host-only and Path=/; check a mutation without CSRF is still
-rejected. Plain HTTP should display the HTTPS instruction. Confirm the intended
+Verify direct HTTP login in a browser: sign in, access an authorized organization,
+refresh, perform a permitted mutation, sign out and sign in again. Check the cookie
+is HttpOnly, SameSite=Lax, host-only and Path=/; it must not be forced Secure on
+HTTP. Repeat through a currently active HTTPS tunnel, where the cookie must also
+be Secure. Check a mutation without CSRF is still rejected. Confirm the intended
 user retains only their actual memberships and permissions. Neither a green build
 nor a health check substitutes for this browser check.
 
