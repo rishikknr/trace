@@ -134,4 +134,19 @@ class TenantConfigurationTests {
     assertFalse(policy.available(request));
     assertFalse(new LocalSignupPolicy(env, false).available(new MockHttpServletRequest()));
   }
+  @Test
+  void publicSignupRequiresExplicitEnablementAndHttps() {
+    var env = new org.springframework.mock.env.MockEnvironment()
+        .withProperty("trace.security.public-signup-enabled", "true");
+    env.setActiveProfiles("staging");
+    var policy = new LocalSignupPolicy(env, false);
+    var request = new MockHttpServletRequest();
+    request.setRemoteAddr("203.0.113.1");
+    assertFalse(policy.available(request));
+    request.setSecure(true);
+    assertTrue(policy.available(request));
+    request.addHeader("Sec-Fetch-Site", "cross-site");
+    assertFalse(policy.available(request));
+  }
+
 }

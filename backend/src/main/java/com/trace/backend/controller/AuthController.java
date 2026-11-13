@@ -4,6 +4,9 @@ import com.trace.backend.dto.request.IdentityRequests.*;
 import com.trace.backend.dto.response.RegistrationOptions;
 import com.trace.backend.dto.response.RegistrationResponse;
 import com.trace.backend.service.IdentityService;
+import com.trace.backend.exception.ApiException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import jakarta.servlet.http.*;
 import java.util.Map;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -13,13 +16,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
   private final IdentityService identities;
+  private final boolean secureCookies;
 
-  public AuthController(IdentityService identities) {
+  public AuthController(IdentityService identities,
+      @Value("${server.servlet.session.cookie.secure:false}") boolean secureCookies) {
     this.identities = identities;
+    this.secureCookies = secureCookies;
   }
 
   @GetMapping("/csrf")
-  public Map<String, String> csrf(CsrfToken token) {
+  public Map<String, String> csrf(CsrfToken token, HttpServletRequest request) {
+    if (secureCookies && !request.isSecure())
+      throw new ApiException(HttpStatus.BAD_REQUEST, "HTTPS_REQUIRED",
+          "Open Trace using its HTTPS address to sign in securely.");
     return Map.of("token", token.getToken(), "headerName", token.getHeaderName());
   }
 

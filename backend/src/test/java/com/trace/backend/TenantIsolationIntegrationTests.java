@@ -1296,6 +1296,88 @@ class TenantIsolationIntegrationTests {
   }
 
   @Test
+  void httpsProxyCookiesRegistrationRotationAndUntrustedForwarding() throws Exception {
+    credential(SHARED, "Testing password for A!");
+    try (var app = securityApp("--spring.profiles.active=staging",
+        "--trace.security.local-token-delivery=false", "--trace.security.local-signup-enabled=false")) {
+      String base = "http://127.0.0.1:" + ((WebServerApplicationContext) app).getWebServer().getPort();
+      // Emulate the TLS terminator: the hop is HTTP, the browser origin is HTTPS.
+      // Secure cookies are carried explicitly over this trusted private hop.
+      class ProxyBrowser {
+        String cookie = "";
+        final HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> send(String path, String method, String body, String token) throws Exception {
+          var builder = HttpRequest.newBuilder(URI.create(base + path))
+              .header("X-Forwarded-Proto", "https")
+              .header("X-Forwarded-Host", "changing-tunnel.trycloudflare.com")
+              .header("X-Forwarded-For", "203.0.113.8")
+              .header("Origin", "https://changing-tunnel.trycloudflare.com");
+          if (!cookie.isEmpty()) builder.header("Cookie", cookie);
+          if (token != null) builder.header("X-CSRF-TOKEN", token);
+          if (body != null) builder.header("Content-Type", body.startsWith("{")
+              ? "application/json" : "application/x-www-form-urlencoded");
+          var response = client.send(builder.method(method, body == null
+              ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body)).build(),
+              HttpResponse.BodyHandlers.ofString());
+          response.headers().allValues("set-cookie").stream().filter(c -> c.startsWith("JSESSIONID="))
+              .findFirst().ifPresent(c -> cookie = c.split(";", 2)[0]);
+          return response;
+        }
+        String token() throws Exception {
+          var response = send("/api/auth/csrf", "GET", null, null);
+          assertStatus(200, response);
+          return new ObjectMapper().readTree(response.body()).get("token").asText();
+        }
+      }
+      var browser = new ProxyBrowser();
+      var csrf = browser.send("/api/auth/csrf", "GET", null, null);
+      assertStatus(200, csrf);
+      assertTrue(csrf.headers().allValues("set-cookie").stream().anyMatch(c ->
+          c.contains("Secure") && c.contains("HttpOnly") && c.contains("Path=/") && c.contains("SameSite=Lax")));
+      String before = browser.cookie;
+      String token = new ObjectMapper().readTree(csrf.body()).get("token").asText();
+      var options = browser.send("/api/auth/registration", "GET", null, null);
+      assertStatus(200, options);
+      assertTrue(new ObjectMapper().readTree(options.body()).get("enabled").asBoolean());
+      var registered = browser.send("/api/auth/register", "POST",
+          "{\"displayName\":\"HTTPS signup\",\"email\":\"https-signup@example.test\","
+              + "\"password\":\"HTTPS signup password!\",\"confirmPassword\":\"HTTPS signup password!\"}", token);
+      assertStatus(201, registered);
+      UUID registeredUser = UUID.fromString(new ObjectMapper().readTree(registered.body()).get("id").asText());
+      assertEquals(0, admin.queryForObject("SELECT count(*) FROM organization_memberships WHERE user_id=?",
+          Integer.class, registeredUser));
+      assertEquals("USER", admin.queryForObject("SELECT platform_role FROM users WHERE id=?", String.class, registeredUser));
+      String login = "email=shared%40example.test&password=Testing+password+for+A%21";
+      assertStatus(200, browser.send("/api/auth/login", "POST", login, token));
+      assertNotEquals(before, browser.cookie);
+      assertStatus(200, browser.send("/api/auth/me", "GET", null, null));
+      // CSRF renewal after authentication; a stale token must fail, then recover.
+      var stale = browser.send("/api/auth/logout", "POST", null, token);
+      assertStatus(403, stale);
+      assertTrue(stale.body().contains("CSRF_INVALID"));
+      assertStatus(200, browser.send("/api/auth/logout", "POST", null, browser.token()));
+      assertStatus(401, browser.send("/api/auth/me", "GET", null, null));
+      assertStatus(200, browser.send("/api/auth/login", "POST", login, browser.token()));
+      // Public HTTP must explain why a Secure session cannot be established.
+      var plain = HttpClient.newHttpClient().send(HttpRequest.newBuilder(URI.create(base + "/api/auth/csrf"))
+          .GET().build(), HttpResponse.BodyHandlers.ofString());
+      assertStatus(400, plain);
+      assertTrue(plain.body().contains("HTTPS_REQUIRED"));
+    }
+    // When the socket peer is not trusted, forged proxy headers cannot enable HTTPS.
+    try (var app = securityApp("--spring.profiles.active=staging",
+        "--trace.security.local-token-delivery=false", "--trace.security.local-signup-enabled=false",
+        "--server.tomcat.remoteip.internal-proxies=192[.]0[.]2[.]1")) {
+      String base = "http://127.0.0.1:" + ((WebServerApplicationContext) app).getWebServer().getPort();
+      var response = HttpClient.newHttpClient().send(HttpRequest.newBuilder(URI.create(base + "/api/auth/csrf"))
+          .header("X-Forwarded-Proto", "https").header("X-Forwarded-Host", "attacker.example")
+          .GET().build(), HttpResponse.BodyHandlers.ofString());
+      assertStatus(400, response);
+      assertTrue(response.body().contains("HTTPS_REQUIRED"));
+    }
+  }
+
+  @Test
   void authenticationCsrfFixationLogoutAndDisabledAccounts() throws Exception {
     credential(SHARED, "Testing password for A!");
     try (var app = securityApp()) {

@@ -115,6 +115,7 @@ export function TraceApp() {
     window.location.hash.slice(1) || "overview",
   );
   const currentRoute = useRef(route);
+  const hadSession = useRef(false);
   const [session, setSession] = useState<Session | null>(null),
     [loading, setLoading] = useState(true),
     [busy, setBusy] = useState(false),
@@ -136,6 +137,7 @@ export function TraceApp() {
         setEpoch((v) => v + 1);
         lastOrganization.current = next.selectedOrganization;
       }
+      hadSession.current = true;
       setSession(next);
       setError(null);
     } catch (e) {
@@ -184,6 +186,11 @@ export function TraceApp() {
       commitRoute();
     };
     const expired = () => {
+      if (hadSession.current) {
+        setAuthNotice("Your session has expired. Please sign in again.");
+      }
+      hadSession.current = false;
+      lastOrganization.current = null;
       clearOrganizationCache();
       setSession(null);
       setEpoch((v) => v + 1);
@@ -258,6 +265,7 @@ export function TraceApp() {
     setBusy(true);
     try {
       await mutate("/auth/logout");
+      hadSession.current = false;
       clearOrganizationCache();
       setSession(null);
       setEpoch((v) => v + 1);

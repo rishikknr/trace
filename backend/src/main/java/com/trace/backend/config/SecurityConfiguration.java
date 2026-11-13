@@ -54,21 +54,27 @@ public class SecurityConfiguration {
                     .anyRequest()
                     .authenticated())
         .requestCache(c -> c.disable())
-        .csrf(c -> c.csrfTokenRepository(new HttpSessionCsrfTokenRepository()))
+        .csrf(
+            c ->
+                c.csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                    // /csrf returns the masked request token, not the raw session token.
+                    .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
         .sessionManagement(s -> s.sessionFixation(f -> f.changeSessionId()))
         .exceptionHandling(
             e ->
                 e.authenticationEntryPoint(
                         (q, r, x) ->
                             SecurityResponses.error(
-                                r, 401, "AUTHENTICATION_REQUIRED", "Sign in to continue"))
+                                r, 401, "AUTHENTICATION_REQUIRED", "Your session has expired. Please sign in again."))
                     .accessDeniedHandler(
                         (q, r, x) ->
                             SecurityResponses.error(
                                 r,
                                 403,
-                                "ACCESS_DENIED",
-                                "Access denied or CSRF token missing or expired")))
+                                x instanceof CsrfException ? "CSRF_INVALID" : "ACCESS_DENIED",
+                                x instanceof CsrfException
+                                    ? "Your security token has expired. Please try again."
+                                    : "You do not have permission to perform this action.")))
         .formLogin(
             f ->
                 f.loginProcessingUrl("/api/auth/login")
@@ -92,7 +98,7 @@ public class SecurityConfiguration {
                         (q, r, e) -> {
                           identities.audit(null, null, "LOGIN_FAILED", "USER", null, "FAILURE");
                           SecurityResponses.error(
-                              r, 401, "INVALID_CREDENTIALS", "Invalid email or password");
+                              r, 401, "INVALID_CREDENTIALS", "Incorrect email or password.");
                         }))
         .logout(
             l ->

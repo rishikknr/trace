@@ -28,7 +28,7 @@ describe("identity feature interactions", () => {
           new Response('{"headerName":"X-CSRF-TOKEN","token":"test"}'),
         )
         .mockResolvedValueOnce(
-          new Response('{"message":"Invalid email or password"}', {
+          new Response('{"message":"Incorrect email or password."}', {
             status: 401,
           }),
         ),
@@ -47,7 +47,7 @@ describe("identity feature interactions", () => {
       screen.getByRole("button", { name: "Sign In", exact: true }),
     );
     expect((await screen.findByRole("alert")).textContent).toContain(
-      "Invalid email or password",
+      "Incorrect email or password.",
     );
     expect(done).not.toHaveBeenCalled();
   });

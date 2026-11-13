@@ -8,11 +8,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-/** Public signup is unverified and must never be enabled by a production profile. */
+/** Local development signup and explicitly enabled HTTPS public registration. */
 @Component
 public class LocalSignupPolicy {
   private static final Set<String> LOOPBACK = Set.of("127.0.0.1", "::1", "0:0:0:0:0:0:0:1");
   private final boolean enabled;
+  private final boolean publicEnabled;
 
   public LocalSignupPolicy(
       Environment environment,
@@ -24,9 +25,12 @@ public class LocalSignupPolicy {
           "Local signup requires only local-dev and server.address=127.0.0.1");
     }
     this.enabled = enabled;
+    this.publicEnabled = environment.getProperty("trace.security.public-signup-enabled", Boolean.class, false);
   }
 
   public boolean available(HttpServletRequest request) {
+    if (publicEnabled)
+      return request.isSecure() && !"cross-site".equals(request.getHeader("Sec-Fetch-Site"));
     return enabled
         && LOOPBACK.contains(request.getRemoteAddr())
         && request.getHeader("Forwarded") == null

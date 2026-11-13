@@ -6,7 +6,7 @@ services:
     image: 117889972903.dkr.ecr.ap-south-1.amazonaws.com/trace-staging-frontend:${TRACE_IMAGE_TAG:?Image tag required}
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8080:80"
+      - "127.0.0.1:8080:8080"
       - "0.0.0.0:80:80"
     depends_on:
       - backend
