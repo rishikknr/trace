@@ -1,9 +1,0 @@
-{
-  "releaseSha256": "ef2ea63d7375161711f2bc27e889160974435cd1ecaedd11504967b8cc8628b4",
-  "migration": "none; existing V16 retained",
-  "backendReadiness": "UP",
-  "processorHealth": "ok",
-  "allStoredCredentialsPreserved": true,
-  "encryptionKeyPreserved": true,
-  "snowflakeLiveAuthentication": "not attempted; matching private key required"
-}

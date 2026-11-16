@@ -1,6 +1,0 @@
-REPRODUCED V14: concurrent deactivation and ownership transfer can leave zero active owners; V15 serialization regression covers the correction
-UPGRADE V5 -> V15: baseline fingerprints preserved; legacy recovery verified
-UPGRADE V7 -> V15: baseline fingerprints preserved; legacy recovery verified
-UPGRADE V8 -> V15: baseline fingerprints preserved; legacy recovery verified
-UPGRADE V10 -> V15: baseline fingerprints preserved; legacy recovery verified
-PERFORMANCE synthetic assets=5000 page=25 listMs=19 fanout=500 graphMs=166 nodes=100 edges=99
